@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideWiz - AI Pitch Decks</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- APK Bridge for Mobile Connectivity -->
+    <script src="{{ url_for('static', filename='config.js') }}"></script>
+    <script src="{{ url_for('static', filename='apk-bridge.js') }}"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
+    <!-- Phosphor Icons for elegant UI -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <div class="background-globes">
+        <div class="globe globe-purple"></div>
+        <div class="globe globe-cyan"></div>
+    </div>
+
+    <main class="glass-container">
+        <header id="main-header" class="hidden">
+            <div class="logo" style="position: relative;">
+                <i class="ph ph-magic-wand"></i>
+                <h1><span class="logo-white">Slide</span><span class="logo-red">Wiz</span></h1>
+            </div>
+            <!-- User Profile Bar -->
+            <div id="user-profile-bar" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; padding: 8px 16px; background: #EFF6FF; border-radius: 50px; border: 1px solid #BFDBFE; flex-wrap: nowrap; font-size: 0.9rem;">
+                <i class="ph ph-user-circle" style="font-size: 1.3rem; color: var(--primary); flex-shrink: 0;"></i>
+                <span id="user-display-name" style="font-weight: 700; color: var(--text-main); white-space: nowrap;"></span>
+                <span style="color: #CBD5E1;">|</span>
+                <span id="user-display-email" style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;"></span>
+                <button type="button" id="open-settings-btn" style="background: none; border: none; font-size: 1.1rem; color: var(--primary); cursor: pointer; padding: 2px 4px; flex-shrink: 0;" title="Settings">
+                    <i class="ph ph-gear"></i>
+                </button>
+                <button type="button" id="logout-btn" style="background: none; border: none; font-size: 1.1rem; color: var(--secondary); cursor: pointer; padding: 2px 4px; flex-shrink: 0;" title="Logout">
+                    <i class="ph ph-sign-out"></i>
+                </button>
+            </div>
+            <p style="margin-top: 14px;">Generate breathtaking, professional pitch decks instantly using advanced AI.</p>
+        </header>
+
+        <!-- LOGIN SECTION -->
+        <div id="login-section" class="auth-container">
+            <div class="logo">
+                <i class="ph ph-shield-check"></i>
+                <h1><span class="logo-white">Slide</span><span class="logo-red">Auth</span></h1>
+            </div>
+            <p class="auth-subtitle">Login to access AI features.</p>
+
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="name@company.com" required />
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required />
+                </div>
+
+                <button type="submit" id="login-submit-btn" class="glow-on-hover" style="margin-top: 20px;">
+                    <span class="btn-text">Login</span>
+                    <i class="ph-bold ph-sign-in"></i>
+                </button>
+            </form>
+
+            <!-- Fingerprint Login Button (Mobile Only) -->
+            <div id="login-fingerprint-section" style="margin-top: 20px; text-align: center;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <div style="flex: 1; height: 1px; background: var(--border);"></div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem; white-space: nowrap;">or</span>
+                    <div style="flex: 1; height: 1px; background: var(--border);"></div>
+                </div>
+                <button type="button" id="fingerprint-login-btn" class="secondary-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="ph ph-fingerprint" style="font-size: 1.4rem;"></i>
+                    <span>Sign In with Fingerprint</span>
+                </button>
+            </div>
+
+            <p style="text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 0.95rem;">
+                Don't have an account?
+                <a href="#" id="switch-to-signup" style="color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer;">Sign Up</a>
+            </p>
+        </div>
+
+        <!-- SIGNUP SECTION -->
+        <div id="signup-section" class="auth-container hidden">
+            <div class="logo">
+                <i class="ph ph-user-plus"></i>
+                <h1><span class="logo-white">Create</span><span class="logo-red">Account</span></h1>
+            </div>
+            <p class="auth-subtitle">Sign up to start generating slides.</p>
+
+            <form id="signup-form">
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="John Doe" required />
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="name@company.com" required />
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6" />
+                </div>
+
+                <button type="submit" id="signup-submit-btn" class="glow-on-hover" style="margin-top: 20px;">
+                    <span class="btn-text">Create Account</span>
+                    <i class="ph-bold ph-user-plus"></i>
+                </button>
+            </form>
+
+            <!-- Fingerprint Signup Button (Mobile Only) -->
+            <div id="signup-fingerprint-section" style="margin-top: 20px; text-align: center;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <div style="flex: 1; height: 1px; background: var(--border);"></div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem; white-space: nowrap;">or sign up instantly</span>
+                    <div style="flex: 1; height: 1px; background: var(--border);"></div>
+                </div>
+                <button type="button" id="fingerprint-signup-btn" class="secondary-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="ph ph-fingerprint" style="font-size: 1.4rem;"></i>
+                    <span>Sign Up with Fingerprint</span>
+                </button>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">No email or password needed!</p>
+            </div>
+
+            <!-- Fingerprint Name Step (shown after scan) -->
+            <div id="fingerprint-name-step" class="hidden" style="margin-top: 20px;">
+                <div class="input-group">
+                    <label for="fingerprint-signup-name">Your Name</label>
+                    <input type="text" id="fingerprint-signup-name" placeholder="Enter your name" />
+                </div>
+                <button type="button" id="fingerprint-name-confirm-btn" class="glow-on-hover" style="margin-top: 10px;">
+                    <span class="btn-text">Complete Sign Up</span>
+                    <i class="ph-bold ph-check"></i>
+                </button>
+            </div>
+
+            <p style="text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 0.95rem;">
+                Already have an account?
+                <a href="#" id="switch-to-login" style="color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer;">Login</a>
+            </p>
+        </div>
+
+        <!-- SETTINGS SECTION -->
+        <div id="settings-section" class="auth-container hidden">
+            <div class="logo" style="position: relative;">
+                <i class="ph ph-gear"></i>
+                <h1><span class="logo-white">Account</span><span class="logo-red">Settings</span></h1>
+                <button type="button" id="close-settings-btn" style="position: absolute; right: 0; top: 0; background: none; border: none; font-size: 2rem; color: var(--text-muted); cursor: pointer; transition: color 0.3s;">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Standard (email) users: Change Password -->
+            <div id="settings-email-mode">
+                <p class="auth-subtitle">Change your password.</p>
+                <form id="settings-form">
+                    <div class="input-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password" placeholder="Enter current password" />
+                    </div>
+                    <div class="input-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" placeholder="Enter new password (min 6 chars)" minlength="6" />
+                    </div>
+                    <button type="submit" id="settings-submit-btn" class="glow-on-hover" style="margin-top: 20px;">
+                        <span class="btn-text">Update Password</span>
+                        <i class="ph-bold ph-floppy-disk"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Fingerprint users: Create a Backup Password -->
+            <div id="settings-fingerprint-mode" class="hidden">
+                <p class="auth-subtitle">Create a backup password in case you lose your device.</p>
+                <form id="settings-create-pass-form">
+                    <div class="input-group">
+                        <label for="fp-new-email">Your Email (for recovery)</label>
+                        <input type="email" id="fp-new-email" placeholder="name@company.com" />
+                    </div>
+                    <div class="input-group">
+                        <label for="fp-new-password">Create Password</label>
+                        <input type="password" id="fp-new-password" placeholder="Min 6 characters" minlength="6" />
+                    </div>
+                    <button type="submit" id="settings-create-pass-btn" class="glow-on-hover" style="margin-top: 20px;">
+                        <span class="btn-text">Save Backup Password</span>
+                        <i class="ph-bold ph-floppy-disk"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+
+        <form id="generator-form" class="hidden">
+            <!-- Row 1: Primary Inputs (Narrow enough for 2-col) -->
+            <div class="row">
+                <div class="input-group">
+                    <label for="topic">Presentation Topic</label>
+                    <input type="text" id="topic" name="topic" placeholder="Artificial Intelligence" />
+                </div>
+                <div class="input-group">
+                    <label for="document">Upload Document (PDF/DOCX/TXT)</label>
+                    <div class="file-input-wrapper">
+                        <button type="button" class="file-custom-btn" onclick="window.document.getElementById('file-upload-input').click()">
+                            <i class="ph ph-upload-simple"></i>
+                            <span id="file-name-display">Select File...</span>
+                        </button>
+                        <input type="file" id="file-upload-input" name="document" accept=".txt,.pdf,.docx" style="display: none;" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Secondary Configuration (Narrow enough for 2-col) -->
+            <div class="row">
+                <div class="input-group">
+                    <label for="subtopics">Sub-topics (Optional)</label>
+                    <input type="text" id="subtopics" name="subtopics" placeholder="History, Future, Ethics" />
+                </div>
+                <div class="input-group" id="slide_count_group">
+                    <label for="num_slides">Number of Slides</label>
+                    <input type="number" id="num_slides" name="num_slides" min="1" max="25" value="5" />
+                </div>
+            </div>
+
+            <!-- Sub-topics Behavior Group (Conditionally hidden in script.js) -->
+            <div id="subtopics_behavior_group" class="input-group hidden" style="margin-bottom: 20px;">
+                <label for="subtopics_behavior">Sub-topic Behavior</label>
+                <div class="select-wrapper">
+                    <select id="subtopics_behavior" name="subtopics_behavior">
+                        <option value="only" selected>Focus ONLY on these sub-topics</option>
+                        <option value="include">Include these WITH general topic overview</option>
+                    </select>
+                    <i class="ph ph-caret-down select-icon"></i>
+                </div>
+            </div>
+
+            <!-- Smart Count Toggle (Conditionally shown in script.js) -->
+            <div class="toggle-group hidden" id="smart_count_container" style="margin-top: 5px; margin-bottom: 20px;">
+                <label class="switch">
+                    <input type="checkbox" id="smart_count" name="smart_count">
+                    <span class="slider round"></span>
+                </label>
+                <div class="toggle-info">
+                    <span class="toggle-title">Smart Slide Count</span>
+                    <span class="toggle-desc">Automatically calculates the optimal number of slides based on document depth.</span>
+                </div>
+            </div>
+
+            <!-- These dropdowns have long text, so they stay full-width to prevent cutoff -->
+            <div class="input-group">
+                <label for="detail_level">Depth of Content</label>
+                <div class="custom-select" id="select-detail_level">
+                    <div class="select-trigger">
+                        <span class="selected-value">In-Depth (Professional Analysis)</span>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+                    <div class="select-options">
+                        <div class="option selected" data-value="detailed">In-Depth (Professional Analysis)</div>
+                        <div class="option" data-value="basic">Short (Punchy Bullet Points)</div>
+                    </div>
+                    <input type="hidden" name="detail_level" id="detail_level" value="detailed">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="theme">Theme Style</label>
+                <div class="custom-select" id="select-theme">
+                    <div class="select-trigger">
+                        <span class="selected-value">Midnight Progressive (User Custom)</span>
+                        <i class="ph ph-caret-down"></i>
+                    </div>
+                    <div class="select-options">
+                        {% for theme in themes %}
+                        <div class="option {% if loop.first %}selected{% endif %}" data-value="{{ theme.id }}">{{ theme.name }}</div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="theme" id="theme" value="1">
+                </div>
+            </div>
+
+            <div class="toggle-group" style="margin-top: 15px; margin-bottom: 25px;">
+                <label class="switch">
+                    <input type="checkbox" id="include_images" name="include_images" checked>
+                    <span class="slider round"></span>
+                </label>
+                <div class="toggle-info">
+                    <span class="toggle-title">Include Automatic Images</span>
+                    <span class="toggle-desc">Fetches relevant professional photos for every slide.</span>
+                </div>
+            </div>
+
+            <div id="pdf_images_group" class="toggle-group hidden" style="margin-bottom: 25px;">
+                <label class="switch">
+                    <input type="checkbox" id="extract_pdf_images" name="extract_pdf_images">
+                    <span class="slider round"></span>
+                </label>
+                <div class="toggle-info">
+                    <span class="toggle-title" style="color: var(--primary-glow);">Extract Images from PDF</span>
+                    <span class="toggle-desc">Scans your uploaded PDF and uses its actual images on the slides.</span>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="glow-on-hover">
+                <span class="btn-text">Generate Presentation</span>
+                <i class="ph-bold ph-magic-wand"></i>
+            </button>
+        </form>
+
+        <!-- Dynamic Output States -->
+        <div id="loading-state" class="hidden">
+            <div class="loader">
+                <svg viewBox="0 0 80 80">
+                    <circle id="test" cx="40" cy="40" r="32"></circle>
+                </svg>
+            </div>
+            <h3>Generating AI Content...</h3>
+            <p class="status-text">The AI is crafting your slides...</p>
+        </div>
+
+        <div id="success-state" class="hidden">
+            <div class="success-icon">
+                <i class="ph-fill ph-check-circle"></i>
+            </div>
+            <h3>Presentation Ready!</h3>
+            <p>Your slides have been successfully generated and saved to the <strong>generated_presentations</strong> folder.</p>
+            <div class="action-row">
+                <a id="download-btn" href="#" class="glow-btn">
+                    <i class="ph-bold ph-download-simple"></i>
+                    Download .PPTX
+                </a>
+                <button id="reset-btn" class="secondary-btn">Create Another</button>
+            </div>
+        </div>
+
+        <div id="error-state" class="hidden">
+            <div class="error-icon">
+                <i class="ph-fill ph-warning-circle"></i>
+            </div>
+            <h3>Generation Failed</h3>
+            <p id="error-message">Something went wrong.</p>
+            <button id="retry-btn" class="secondary-btn">Try Again</button>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}?v=2"></script>
+</body>
+</html>

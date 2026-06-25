@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Screenshot{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'dashboard/sidebar.html' %}
+    <div class="dashboard-main">
+        <div class="dashboard-header"><h1>Add Screenshot — {{ app.name }}</h1></div>
+        <form method="post" enctype="multipart/form-data" class="dashboard-form narrow">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>
+                {{ field }}
+                {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Upload</button>
+                <a href="{% url 'dashboard_edit_app' app.slug %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

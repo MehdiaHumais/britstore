@@ -1,0 +1,11 @@
+python-pptx
+requests
+Pillow
+Flask
+PyMuPDF
+python-docx
+duckduckgo_search
+lxml
+google-generativeai
+python-dotenv
+flask-cors

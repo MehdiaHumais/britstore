@@ -1,0 +1,12 @@
+com\auth\dto\RegisterRequest.class
+com\auth\controller\AuthController.class
+com\auth\config\SecurityConfig.class
+com\auth\security\JwtService.class
+com\auth\entity\User.class
+com\auth\dto\AuthResponse.class
+com\auth\AuthApplication.class
+com\auth\dto\UpgradeRequest.class
+com\auth\entity\Device.class
+com\auth\repository\DeviceRepository.class
+com\auth\service\AuthService.class
+com\auth\repository\UserRepository.class

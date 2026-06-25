@@ -1,0 +1,116 @@
+name: Build Android APK & Upload to App Store
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: 'Release notes for this build'
+        required: false
+        default: ''
+      force_update:
+        description: 'Force users to update (true/false)'
+        required: true
+        default: 'false'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
+      - name: Build signed release APK
+        run: |
+          if [ -f "gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleRelease \
+              -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
+              -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+              -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+              -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+          else
+            echo "No gradlew found — ensure your Android project root is at the repository root."
+            exit 1
+          fi
+
+      - name: Extract package name and version
+        id: extract
+        run: |
+          if [ -f "app/build.gradle" ]; then
+            GRADLE_FILE="app/build.gradle"
+          elif [ -f "app/build.gradle.kts" ]; then
+            GRADLE_FILE="app/build.gradle.kts"
+          else
+            echo "Could not find app/build.gradle(.kts)"
+            exit 1
+          fi
+
+          PACKAGE_NAME=$(grep -E "applicationId\s+" $GRADLE_FILE | head -1 | sed 's/.*applicationId\s*["\x27]\([^"\x27]*\)["\x27].*/\1/')
+          VERSION_NAME=$(grep -E "versionName\s+" $GRADLE_FILE | head -1 | sed 's/.*versionName\s*["\x27]\([^"\x27]*\)["\x27].*/\1/')
+          VERSION_CODE=$(grep -E "versionCode\s+" $GRADLE_FILE | head -1 | sed 's/[^0-9]*\([0-9]*\).*/\1/')
+
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+
+          echo "Extracted: $PACKAGE_NAME v$VERSION_NAME ($VERSION_CODE)"
+
+      - name: Locate APK
+        id: apk
+        run: |
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "No APK found in app/build/outputs/apk/release/"
+            exit 1
+          fi
+          echo "path=$APK" >> $GITHUB_OUTPUT
+          echo "APK located at: $APK"
+
+      - name: Upload release to App Store
+        env:
+          STORE_URL: ${{ secrets.STORE_URL }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          APK_PATH: ${{ steps.apk.outputs.path }}
+          PACKAGE_NAME: ${{ steps.extract.outputs.package_name }}
+          VERSION: ${{ steps.extract.outputs.version }}
+          VERSION_CODE: ${{ steps.extract.outputs.version_code }}
+          FORCE_UPDATE: ${{ github.event.inputs.force_update || 'false' }}
+          RELEASE_NOTES: |
+            ${{ github.event.inputs.release_notes || github.event.head_commit.message }}
+        run: |
+          NOTES_FILE=$(mktemp)
+          echo "$RELEASE_NOTES" > "$NOTES_FILE"
+
+          curl -v -X POST "$STORE_URL/api/upload-release/" \
+            -H "Authorization: Bearer $API_TOKEN" \
+            -F "package_name=$PACKAGE_NAME" \
+            -F "app_name=${{ github.event.repository.name }}" \
+            -F "version=$VERSION" \
+            -F "version_code=$VERSION_CODE" \
+            -F "apk_file=@$APK_PATH" \
+            -F "release_notes=@$NOTES_FILE" \
+            -F "force_update=$FORCE_UPDATE"
+
+          rm -f "$NOTES_FILE"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::APK build or upload failed for ${{ steps.extract.outputs.package_name }}"

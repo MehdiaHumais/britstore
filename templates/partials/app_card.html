@@ -1,0 +1,19 @@
+<a href="{% url 'app_detail' app.slug %}" class="app-card">
+    <div class="app-card-icon">
+        {% if app.icon %}
+        <img src="{{ app.icon.url }}" alt="{{ app.name }}">
+        {% else %}
+        <span class="app-placeholder">{{ app.name|slice:":1" }}</span>
+        {% endif %}
+    </div>
+    <h3>{{ app.name|truncatechars:20 }}</h3>
+    <div class="app-category">{{ app.category.name }}</div>
+    <div class="app-rating">
+        <span class="stars">
+            {% for i in "12345"|make_list %}
+            <span class="star {% if forloop.counter <= app.avg_rating_int %}filled{% else %}empty{% endif %}">★</span>
+            {% endfor %}
+        </span>
+        <span>{{ app.avg_rating|floatformat:1 }}</span>
+    </div>
+</a>

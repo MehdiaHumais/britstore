@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Messages{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'dashboard/sidebar.html' %}
+    <div class="dashboard-main">
+        <div class="dashboard-header flex-between">
+            <h1>Contact Messages</h1>
+            {% if unread_count %}
+            <span class="badge badge-featured" style="font-size:.85rem;padding:.35rem .85rem">{{ unread_count }} unread</span>
+            {% endif %}
+        </div>
+        {% for msg in messages_list %}
+        <div class="dashboard-card message-card" style="{% if not msg.is_read %}border-left:4px solid var(--blue);background:var(--blue-light){% endif %}">
+            <div class="message-header">
+                <strong>{{ msg.subject }}</strong>
+                <div>
+                    <span>{{ msg.created_at|date:"M d, Y H:i" }}</span>
+                    {% if not msg.is_read %}
+                    <form method="post" style="display:inline">
+                        {% csrf_token %}
+                        <button type="submit" name="mark_read" value="{{ msg.pk }}" class="btn btn-outline btn-sm" style="margin-left:.5rem">Mark Read</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            <p><strong>{{ msg.name }}</strong> &lt;{{ msg.email }}&gt;</p>
+            <p>{{ msg.message|linebreaks }}</p>
+            <details style="margin-top:.75rem">
+                <summary style="cursor:pointer;color:var(--blue);font-size:.875rem;font-weight:500">Reply via email</summary>
+                <form method="post" style="margin-top:.75rem">
+                    {% csrf_token %}
+                    <input type="hidden" name="reply_id" value="{{ msg.pk }}">
+                    <div class="form-group">
+                        <textarea name="reply_text" class="form-control" rows="3" placeholder="Type your reply here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Send Reply</button>
+                    <a href="mailto:{{ msg.email }}" class="btn btn-outline btn-sm">Open in Email Client</a>
+                </form>
+            </details>
+        </div>
+        {% empty %}
+        <p class="text-muted">No messages yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

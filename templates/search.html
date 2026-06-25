@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Search Apps</h1>
+        </div>
+        <form action="{% url 'search' %}" method="get" class="search-page-form">
+            <input type="search" name="q" value="{{ query }}" placeholder="Search by app name, description..." class="form-control">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat.slug }}" {% if category_slug == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        {% if query or category_slug %}
+        <p class="search-results-count">{{ apps|length }} result{{ apps|length|pluralize }} found</p>
+        {% endif %}
+        {% if apps %}
+        <div class="app-grid">
+            {% for app in apps %}
+            {% include 'partials/app_card.html' %}
+            {% endfor %}
+        </div>
+        {% elif query %}
+        <div class="empty-state">
+            <p>No apps found for "{{ query }}". Try a different search term.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

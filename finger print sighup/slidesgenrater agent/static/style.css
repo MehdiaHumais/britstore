@@ -1,0 +1,781 @@
+:root {
+    --bg-color: #F8FAFC; /* Ice White */
+    --glass-bg: #FFFFFF; /* Pure White Card */
+    --glass-border: #E2E8F0; /* Soft Slate */
+    --primary: #1E40AF; /* Royal Blue */
+    --primary-glow: rgba(30, 64, 175, 0.1);
+    --secondary: #DC2626; /* Modern Crimson */
+    --text-main: #1E293B; /* Deep Slate */
+    --text-muted: #64748B; /* Professional Gray */
+    --input-bg: #FFFFFF;
+}
+
+* {
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+/* Background - Clean & Professional */
+.background-globes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #F8FAFC;
+}
+
+/* Main Container - The Crisp Professional Card */
+.glass-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 3.5rem 2.5rem;
+    width: 95%; 
+    max-width: 720px;
+    margin: 2rem auto;
+    overflow: visible;
+    box-shadow: 0 20px 40px -10px rgba(30, 64, 175, 0.08); /* Soft blue-tinted shadow */
+    z-index: 10;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-container:hover {
+    box-shadow: 0 30px 60px -12px rgba(30, 64, 175, 0.12);
+    transform: translateY(-4px);
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 0.8rem;
+}
+
+.logo i {
+    font-size: 2.8rem;
+    color: var(--primary); /* Royal Blue Icon */
+}
+
+h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.logo-white { color: var(--primary); } /* "Slide" in Royal Blue */
+.logo-red { color: var(--secondary); }   /* "Wiz" in Crimson Red */
+
+header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 400;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Forms */
+.row {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+    background: #FFFFFF;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    width: auto; 
+    display: block;
+    position: relative;
+    overflow: visible;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.input-group:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.input-group:focus-within {
+    border-color: var(--primary); /* Blue for active input */
+    box-shadow: 0 0 0 4px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: var(--primary); /* Royal Blue Labels */
+    letter-spacing: 0.5px;
+    text-transform: none; /* Clean professional look */
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    background: #F8FAFC;
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 1.1rem 1.3rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    background: #FFFFFF;
+    border-color: var(--primary);
+}
+
+/* File Input System */
+.file-custom-btn {
+    width: 100%;
+    max-width: 100%;
+    background: #F8FAFC;
+    border: 1px dashed #CBD5E1;
+    color: var(--text-muted);
+    padding: 1.2rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    overflow: hidden;
+}
+
+.file-custom-btn i {
+    color: var(--primary); /* Blue icon for upload */
+}
+
+.file-custom-btn:hover {
+    background: #F1F5F9;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Custom Select Dropdown System */
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.select-trigger {
+    width: 100%;
+    background: #F8FAFC;
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 1.1rem 1.3rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.select-trigger:hover {
+    background: #FFFFFF;
+    border-color: var(--primary);
+}
+
+.select-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    z-index: 1000;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+    display: none;
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-select.active .select-options {
+    display: block;
+}
+
+.option {
+    padding: 1.1rem 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.option:hover {
+    background: #F1F5F9;
+    color: var(--primary);
+}
+
+.option.selected {
+    background: #EFF6FF;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Toggle Switch - Royal Blue */
+.toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    background: #F1F5F9;
+    padding: 1.8rem;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+.toggle-group:hover {
+    border-color: var(--primary);
+    background: #EBF2FF;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #CBD5E1;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--primary); /* Blue for active toggle */
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.toggle-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.toggle-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+    color: var(--text-main);
+}
+
+.toggle-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Buttons & Actions */
+button, .glow-btn, .secondary-btn {
+    width: 100%;
+    padding: 1.1rem;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+#user-profile-bar button {
+    width: auto !important;
+    padding: 4px 8px !important;
+    background: transparent !important;
+}
+
+.glow-on-hover, .glow-btn {
+    background: linear-gradient(to right, #DC2626, #EF4444);
+    color: white !important;
+    box-shadow: 0 8px 20px -6px rgba(220, 38, 38, 0.4);
+}
+
+.glow-on-hover:hover, .glow-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px -8px rgba(220, 38, 38, 0.5);
+    filter: brightness(1.1);
+}
+
+.secondary-btn {
+    background: #F1F5F9;
+    color: var(--text-muted);
+    border: 1px solid #E2E8F0;
+}
+
+.secondary-btn:hover {
+    background: #E2E8F0;
+    color: var(--text-main);
+}
+
+.action-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.action-row > * {
+    flex: 1; /* Make both buttons equal width */
+}
+
+#success-state, #error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    animation: slideIn 0.5s ease-out;
+}
+
+#success-state h3 {
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+#success-state p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin-bottom: 2.5rem;
+}
+
+.success-icon {
+    margin-bottom: 1.5rem;
+    background: #ecfdf5;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-icon i {
+    font-size: 3.5rem;
+    color: #10B981;
+}
+
+.action-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 480px;
+}
+
+.error-icon {
+    margin-bottom: 1.5rem;
+    background: #fef2f2;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-icon i {
+    font-size: 3.5rem;
+    color: var(--secondary);
+}
+
+/* SVG Loader - Royal Blue */
+.loader {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 2.5rem;
+}
+
+.loader svg circle {
+    fill: none;
+    stroke-width: 6;
+    stroke: var(--primary);
+    stroke-linecap: round;
+    stroke-dasharray: 150;
+    stroke-dashoffset: 20;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes dash {
+    0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
+    100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
+}
+
+/* =============================================
+   RESPONSIVE - MOBILE FIRST
+   ============================================= */
+
+/* States */
+.hidden {
+    display: none !important;
+}
+
+/* --- Small phones (max 480px) --- */
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+        align-items: flex-start;
+    }
+
+    .glass-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        padding: 2rem 1.2rem !important;
+        margin: 0 !important;
+        min-height: 100vh;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+
+    h1 {
+        font-size: 1.8rem !important;
+        letter-spacing: -1px;
+    }
+
+    .logo i {
+        font-size: 2rem !important;
+    }
+
+    header p, .auth-subtitle {
+        font-size: 0.95rem !important;
+    }
+
+    /* Profile bar stays compact on tiny screens */
+    #user-profile-bar {
+        padding: 6px 12px !important;
+        gap: 8px !important;
+        border-radius: 30px !important;
+    }
+
+    #user-display-email, .profile-separator {
+        display: none !important; /* hide email on tiny screen, show name only */
+    }
+    
+    /* ONLY SHOW FINGERPRINT ON MOBILE */
+    #login-fingerprint-toggle, #fingerprint-container, #settings-fingerprint-container {
+        display: flex !important; /* or block depending on what it needs */
+    }
+    #settings-fingerprint-container {
+        display: block !important;
+    }
+
+    .input-group {
+        padding: 1.2rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    label {
+        font-size: 0.8rem !important;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 0.9rem 1rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    .toggle-group {
+        padding: 1.2rem !important;
+        gap: 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .toggle-title {
+        font-size: 0.95rem !important;
+    }
+
+    .toggle-desc {
+        font-size: 0.8rem !important;
+    }
+
+    button, .glow-btn, .secondary-btn {
+        padding: 1rem !important;
+        font-size: 1rem !important;
+    }
+    
+    #user-profile-bar button {
+        padding: 2px 4px !important;
+    }
+
+    .action-row {
+        flex-direction: column !important;
+        max-width: 100% !important;
+    }
+
+    .action-row > * {
+        width: 100% !important;
+    }
+
+    .fingerprint-btn {
+        width: 75px !important;
+        height: 75px !important;
+        font-size: 3rem !important;
+    }
+
+    #success-state, #error-state {
+        padding: 2rem 1rem !important;
+    }
+
+    .success-icon, .error-icon {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .success-icon i, .error-icon i {
+        font-size: 2.8rem !important;
+    }
+}
+
+/* Hide fingerprint buttons on desktop/tablet (mobile-only feature) */
+@media (min-width: 481px) {
+    #login-fingerprint-section,
+    #signup-fingerprint-section,
+    #fingerprint-name-step {
+        display: none !important;
+    }
+}
+
+/* --- Tablets (481px - 768px) --- */
+@media (min-width: 481px) and (max-width: 768px) {
+    body {
+        padding: 1rem 0;
+    }
+
+    .glass-container {
+        width: 92% !important;
+        padding: 2.5rem 2rem !important;
+        border-radius: 20px !important;
+    }
+
+    h1 {
+        font-size: 2.2rem !important;
+    }
+
+    #user-profile-bar {
+        padding: 8px 16px !important;
+        gap: 10px !important;
+    }
+
+    .action-row {
+        max-width: 100% !important;
+    }
+
+    .row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* --- Desktop (769px+) --- */
+@media (min-width: 769px) {
+    .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+}
+
+
+/* Authentication Section Styles */
+.auth-container {
+    animation: fadeIn 0.5s ease-out;
+    width: 100%;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
+}
+
+#fingerprint-container {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 1.5rem;
+    border-radius: 20px;
+    background: #F8FAFC;
+    border: 1px solid var(--glass-border);
+    transition: all 0.4s ease;
+}
+
+.fingerprint-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    font-size: 3.5rem;
+    margin: 0 auto;
+    transition: all 0.4s ease;
+}
+
+.fingerprint-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.fingerprint-disabled .fingerprint-btn {
+    background: #F1F5F9;
+    border: 2px dashed #CBD5E1;
+    color: #94A3B8;
+}
+
+.fingerprint-disabled #fingerprint-text {
+    color: #94A3B8;
+}
+
+.fingerprint-enabled {
+    opacity: 1;
+    pointer-events: all;
+    background: #EFF6FF !important;
+    border-color: #BFDBFE !important;
+}
+
+.fingerprint-enabled .fingerprint-btn {
+    background: var(--primary-glow);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(30, 64, 175, 0.2);
+}
+
+.fingerprint-enabled .fingerprint-btn:hover {
+    transform: scale(1.05);
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 0 30px rgba(30, 64, 175, 0.4);
+}
+
+.fingerprint-enabled #fingerprint-text {
+    color: var(--primary);
+}
+
+#fingerprint-text {
+    margin-top: 15px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.fingerprint-scanning .fingerprint-btn {
+    animation: pulse 1s infinite;
+    background: var(--primary);
+    color: white;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.4); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(30, 64, 175, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 64, 175, 0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

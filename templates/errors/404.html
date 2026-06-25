@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container" style="text-align:center;padding:4rem 0;">
+        <div style="font-size:4rem;margin-bottom:1rem;color:var(--gray-400);">404</div>
+        <h1 style="margin-bottom:.5rem;">Page Not Found</h1>
+        <p style="color:var(--gray-500);max-width:400px;margin:0 auto 2rem;">
+            {% if message %}{{ message }}{% else %}The page you're looking for doesn't exist, was removed, or is in development.{% endif %}
+        </p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+        <a href="{% url 'downloads' %}" class="btn btn-outline" style="margin-left:.5rem;">Browse Apps</a>
+    </div>
+</section>
+{% endblock %}

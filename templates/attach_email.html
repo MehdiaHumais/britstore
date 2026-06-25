@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Attach Email &amp; Password{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container narrow">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="logo-icon lg">BS</span>
+                <h1>Attach Email &amp; Password</h1>
+                <p>Set up a recovery method for your fingerprint account</p>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_email">Email <span style="color:var(--red)">*</span></label>
+                    <input type="email" name="email" id="id_email" class="form-control" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="id_password1">Password <span style="color:var(--red)">*</span></label>
+                    <input type="password" name="password1" id="id_password1" class="form-control" required minlength="8" placeholder="Min 8 characters">
+                </div>
+                <div class="form-group">
+                    <label for="id_password2">Confirm Password <span style="color:var(--red)">*</span></label>
+                    <input type="password" name="password2" id="id_password2" class="form-control" required minlength="8" placeholder="Re-enter password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">Attach &amp; Save</button>
+                </div>
+            </form>
+            <p class="auth-footer"><a href="{% url 'profile' %}">Back to Profile</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

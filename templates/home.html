@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if featured_apps %}
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>{{ site_settings.hero_title }}</h1>
+            <p>{{ site_settings.hero_subtitle }}</p>
+            <div class="hero-actions">
+                <a href="{% url 'downloads' %}" class="btn btn-primary btn-lg">Browse Apps</a>
+                <a href="{% url 'about' %}" class="btn btn-outline btn-lg">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured</h2>
+            <a href="{% url 'downloads' %}">See all</a>
+        </div>
+        <div class="featured-scroll">
+            {% for app in featured_apps %}
+            <a href="{% url 'app_detail' app.slug %}" class="featured-card">
+                <div class="featured-card-icon">
+                    {% if app.icon %}<img src="{{ app.icon.url }}" alt="{{ app.name }}">{% endif %}
+                </div>
+                <div class="featured-card-body">
+                    <h3>{{ app.name }}</h3>
+                    <div class="app-category">{{ app.category.name }}</div>
+                    <div class="app-rating" style="margin-top:.5rem">
+                        <span class="stars">
+                            {% with avg=app.avg_rating|floatformat:0 %}
+                            {% for i in "12345"|make_list %}
+                            <span class="star {% if forloop.counter <= avg|add:0 %}filled{% else %}empty{% endif %}">★</span>
+                            {% endfor %}
+                            {% endwith %}
+                        </span>
+                        <span>{{ app.avg_rating|floatformat:1 }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if categories %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Categories</h2>
+        </div>
+        <div class="category-grid">
+            {% for cat in categories %}
+            <a href="{% url 'category' cat.slug %}" class="category-card">
+                <span class="category-icon">
+                    {% if cat.icon %}<img src="{{ cat.icon.url }}" alt="{{ cat.name }}">
+                    {% elif cat.icon_emoji %}{{ cat.icon_emoji }}{% else %}📱{% endif %}
+                </span>
+                <span>{{ cat.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if popular_apps %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Popular</h2>
+            <a href="{% url 'downloads' %}">See all</a>
+        </div>
+        <div class="app-grid">
+            {% for app in popular_apps %}
+            {% include 'partials/app_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if latest_apps %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>New Releases</h2>
+            <a href="{% url 'downloads' %}">See all</a>
+        </div>
+        <div class="app-grid">
+            {% for app in latest_apps %}
+            {% include 'partials/app_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

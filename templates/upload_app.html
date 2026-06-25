@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if is_edit %}Edit App{% else %}Upload App{% endif %}{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'dashboard/sidebar.html' %}
+    <div class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>{% if is_edit %}Edit: {{ app.name }}{% else %}Upload New App{% endif %}</h1>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="dashboard-form">
+            {% csrf_token %}
+            <div class="form-grid" id="appFormGrid">
+                {% for field in form %}
+                {% if field.name == 'price' or field.name == 'currency' %}
+                <div class="form-group paid-only" id="field_{{ field.name }}" style="{% if form.price_type.value != 'paid' %}display:none{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% if field.help_text %}<small class="help-text">{{ field.help_text }}</small>{% endif %}
+                    {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
+                </div>
+                {% else %}
+                <div class="form-group {% if field.field.widget.input_type == 'checkbox' %}form-check{% endif %}" id="field_{{ field.name }}">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                    {{ field }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>
+                    {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}<small class="help-text">{{ field.help_text }}</small>{% endif %}
+                    {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if not is_edit %}
+            <div class="form-section">
+                <h3>Screenshots <span class="required-mark">*</span></h3>
+                <p class="help-text">Upload at least <strong>7 screenshots</strong> (preferably all mobile, with tablet screenshots as a bonus). You can add more later on the edit page.</p>
+                <div class="form-group">
+                    <label>Mobile Screenshots <span class="required-mark">*</span></label>
+                    <div class="file-input-wrap">
+                        <input type="file" name="mobile_screenshots" id="mobileFiles" multiple accept="image/*" class="file-input" onchange="previewScreenshots(this, 'mobilePreviews')">
+                        <label for="mobileFiles" class="file-input-label">Choose Files</label>
+                        <span class="file-input-text" id="mobileFileText">No files chosen</span>
+                    </div>
+                    <small class="help-text">Select at least 7 mobile screenshots (hold Ctrl/Cmd to select multiple). Min width 320px.</small>
+                    <div class="screenshot-previews" id="mobilePreviews"></div>
+                </div>
+                <div class="form-group">
+                    <label>Tablet Screenshots</label>
+                    <div class="file-input-wrap">
+                        <input type="file" name="tablet_screenshots" id="tabletFiles" multiple accept="image/*" class="file-input" onchange="previewScreenshots(this, 'tabletPreviews')">
+                        <label for="tabletFiles" class="file-input-label">Choose Files</label>
+                        <span class="file-input-text" id="tabletFileText">No files chosen</span>
+                    </div>
+                    <small class="help-text">Optional — upload tablet screenshots here. Min width 600px.</small>
+                    <div class="screenshot-previews" id="tabletPreviews"></div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{% if is_edit %}Save Changes{% else %}Upload App{% endif %}</button>
+                <a href="{% url 'dashboard_apps' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+
+        {% if is_edit %}
+        <div class="manage-sections">
+            <div class="dashboard-card">
+                <div class="card-header-row">
+                    <h3>Screenshots <span class="required-mark">*</span></h3>
+                    <a href="{% url 'dashboard_add_screenshot' app.slug %}" class="btn btn-outline btn-sm">+ Add</a>
+                </div>
+                {% if mobile_count < 7 %}
+                <div class="alert alert-warning">
+                    Need at least <strong>7 screenshots</strong> ({{ mobile_count }} mobile, {{ tablet_count }} tablet so far). Use <strong>+ Add</strong> to upload more.
+                </div>
+                {% endif %}
+                <div class="screenshots-manage">
+                    {% for shot in screenshots %}
+                    <div class="screenshot-manage-item">
+                        <img src="{{ shot.image.url }}" alt="">
+                        <span class="screenshot-type-badge {{ shot.type }}">{{ shot.get_type_display }}</span>
+                        <form method="post" action="{% url 'dashboard_delete_screenshot' app.slug shot.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Remove screenshot?')">Remove</button>
+                        </form>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No screenshots yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-header-row">
+                    <h3>Version History</h3>
+                    <a href="{% url 'dashboard_add_version' app.slug %}" class="btn btn-outline btn-sm">+ Add Version</a>
+                </div>
+                <ul class="dash-list">
+                    {% for ver in versions %}
+                    <li>
+                        <span>v{{ ver.version }} — {{ ver.file_size_display }}</span>
+                        <form method="post" action="{% url 'dashboard_delete_version' app.slug ver.pk %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this version?')">Delete</button>
+                        </form>
+                    </li>
+                    {% empty %}
+                    <li class="text-muted">No previous versions</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+function previewScreenshots(input, containerId) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = '';
+    var files = input.files;
+    var maxPreview = Math.min(files.length, 10);
+    for (var i = 0; i < maxPreview; i++) {
+        (function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        })(files[i]);
+    }
+    if (files.length > 10) {
+        var more = document.createElement('div');
+        more.className = 'preview-count';
+        more.textContent = '+' + (files.length - 10);
+        container.appendChild(more);
+    }
+    if (files.length === 0) {
+        var none = document.createElement('div');
+        none.className = 'preview-count';
+        none.textContent = 'No files';
+        container.appendChild(none);
+    }
+    var textId = containerId === 'mobilePreviews' ? 'mobileFileText' : 'tabletFileText';
+    var textEl = document.getElementById(textId);
+    if (textEl) textEl.textContent = files.length + ' file(s) selected';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var priceType = document.getElementById('id_price_type');
+    if (priceType) {
+        priceType.addEventListener('change', function() {
+            var show = this.value === 'paid';
+            document.querySelectorAll('.paid-only').forEach(function(el) {
+                el.style.display = show ? '' : 'none';
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/finger print sighup.iml" filepath="$PROJECT_DIR$/finger print sighup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fingerprint-auth-server/fingerprint-auth-server.iml" filepath="$PROJECT_DIR$/fingerprint-auth-server/fingerprint-auth-server.iml" />
+    </modules>
+  </component>
+</project>

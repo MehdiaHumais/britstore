@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Categories{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'dashboard/sidebar.html' %}
+    <div class="dashboard-main">
+        <div class="dashboard-header flex-between">
+            <h1>Categories</h1>
+            <a href="{% url 'dashboard_category_create' %}" class="btn btn-primary">+ Add Category</a>
+        </div>
+        <table class="dash-table">
+            <thead><tr><th>Name</th><th>Icon</th><th>Apps</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for cat in categories %}
+                <tr>
+                    <td>{{ cat.name }}</td>
+                    <td>
+                        {% if cat.icon %}
+                        <img src="{{ cat.icon.url }}" alt="{{ cat.name }}" style="width:32px;height:32px;object-fit:cover;border-radius:6px;">
+                        {% elif cat.icon_emoji %}
+                        <span style="font-size:1.3rem">{{ cat.icon_emoji }}</span>
+                        {% else %}
+                        <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ cat.app_count }}</td>
+                    <td>
+                        <a href="{% url 'dashboard_category_edit' cat.pk %}" class="btn btn-outline btn-sm">Edit</a>
+                        <form method="post" action="{% url 'dashboard_category_delete' cat.pk %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete category?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

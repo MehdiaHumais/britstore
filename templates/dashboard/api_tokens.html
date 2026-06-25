@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+{% block title %}API Tokens{% endblock %}
+{% block content %}
+<div class="dashboard-layout">
+{% include 'dashboard/sidebar.html' %}
+<div class="dashboard-main">
+<div class="dashboard-header flex-between">
+    <div>
+        <h1>API Tokens</h1>
+        <p>Tokens used by CI/CD pipelines to upload releases</p>
+    </div>
+    <a href="{% url 'dashboard_api_token_create' %}" class="btn btn-primary">+ New Token</a>
+</div>
+
+<div class="card">
+    <table class="dash-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>User</th>
+                <th>Package</th>
+                <th>Status</th>
+                <th>Last Used</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tok in tokens %}
+            <tr>
+                <td><strong>{{ tok.name }}</strong></td>
+                <td>{{ tok.user.username }}</td>
+                <td>{% if tok.package_name %}<code>{{ tok.package_name }}</code>{% else %}<span class="text-muted">Any</span>{% endif %}</td>
+                <td>{% if tok.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-error">Revoked</span>{% endif %}</td>
+                <td>{{ tok.last_used|timesince|default:"Never" }} ago</td>
+                <td>{{ tok.created_at|date:"M d, Y" }}</td>
+                <td style="white-space:nowrap">
+                    {% if tok.is_active %}
+                    <form method="post" action="{% url 'dashboard_api_token_regenerate' tok.pk %}" style="display:inline">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline" onclick="return confirm('Regenerate this token? Apps using it will stop working until updated.')">Regenerate</button>
+                    </form>
+                    <form method="post" action="{% url 'dashboard_api_token_revoke' tok.pk %}" style="display:inline">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('Revoke this token? This cannot be undone.')">Revoke</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">Revoked</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-500)">No API tokens created yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<hr style="margin:2rem 0">
+
+<div class="dashboard-header">
+    <div>
+        <h2>Upload Audit Log</h2>
+        <p>Recent CI/CD upload activity</p>
+    </div>
+</div>
+
+<div class="card">
+    <table class="dash-table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Package</th>
+                <th>Version</th>
+                <th>Token</th>
+                <th>Uploader</th>
+                <th>Force</th>
+                <th>IP</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in audit_logs %}
+            <tr>
+                <td>{{ log.created_at|timesince }} ago</td>
+                <td><code>{{ log.package_name }}</code></td>
+                <td>v{{ log.version }} ({{ log.version_code }})</td>
+                <td>{{ log.token_name }}</td>
+                <td>{{ log.uploader.username|default:"?" }}</td>
+                <td>{% if log.force_update %}<span class="badge badge-error">Force</span>{% else %}<span class="badge badge-success">Normal</span>{% endif %}</td>
+                <td>{{ log.ip_address|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-500)">No uploads yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+</div>
+
+{% if new_api_token %}
+<div class="token-modal-overlay" id="tokenModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:99999;padding:1rem">
+    <div style="background:#fff;border-radius:16px;max-width:520px;width:100%;box-shadow:0 25px 80px rgba(0,0,0,0.35);overflow:hidden">
+        <div style="text-align:center;padding:2rem 2rem 0.75rem">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#e8f5e9;color:#16a34a;margin-bottom:0.75rem">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2 style="margin:0 0 0.25rem;font-size:1.35rem;font-weight:700;color:#171717">Token Generated</h2>
+            <p style="margin:0;font-size:0.85rem;color:#a3a3a3">Copy this token now &mdash; you won't see it again</p>
+        </div>
+        <div style="padding:0 2rem 1.5rem">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+                <span style="font-size:0.8rem;font-weight:600;color:#737373;text-transform:uppercase;letter-spacing:0.03em">{{ new_api_token_name }}</span>
+                {% if new_api_token_package %}
+                <span style="font-size:0.75rem;background:#f2f2f2;padding:0.15rem 0.5rem;border-radius:4px;color:#737373;font-family:monospace">{{ new_api_token_package }}</span>
+                {% endif %}
+            </div>
+            <div id="tokenDisplay" style="background:#0d0d0d;color:#e5e5e5;font-family:'Consolas','Courier New',monospace;font-size:0.78rem;line-height:1.6;padding:1rem 1.15rem;border-radius:12px;word-break:break-all;border:1px solid #2a2a2a;user-select:all;cursor:copy;max-height:200px;overflow-y:auto">{{ new_api_token }}</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:0.75rem;padding:1rem 2rem 1.5rem;background:#f2f2f2">
+            <button class="btn btn-primary" id="copyTokenBtn" onclick="copyToken()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px;vertical-align:middle"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Token
+            </button>
+            <form method="post" action="{% url 'dashboard_api_token_create' %}" style="display:inline">
+                {% csrf_token %}
+                <input type="hidden" name="clear_token" value="1">
+                <button type="submit" class="btn btn-outline" id="doneTokenBtn">Done</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToken() {
+    var el = document.getElementById('tokenDisplay');
+    if (!el) return;
+    var text = el.textContent.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text); });
+    } else { fallbackCopy(text); }
+}
+function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showCopied(); } catch(e) {}
+    document.body.removeChild(ta);
+}
+function showCopied() {
+    var btn = document.getElementById('copyTokenBtn');
+    var orig = btn.innerHTML;
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="margin-right:6px;vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.style.background = '#16a34a'; btn.style.borderColor = '#16a34a'; btn.style.color = '#fff';
+    setTimeout(function(){ btn.innerHTML = orig; btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+}
+</script>
+{% endblock %}

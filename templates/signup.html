@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<section class="section auth-section">
+    <div class="container narrow">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="logo-icon lg">BS</span>
+                <h1>Create Account</h1>
+                <p>Sign up to download apps from {{ site_settings.site_name }}</p>
+            </div>
+            <form method="post" class="auth-form-standard">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
+                    {% if field.help_text and not field.errors %}<div class="help-text">{{ field.help_text }}</div>{% endif %}
+                </div>
+                {% endfor %}
+                {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors.0 }}</div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+            <div class="auth-divider"><span>or</span></div>
+            <button id="fpSignupBtn" class="btn btn-outline btn-block fingerprint-btn" style="display:none" onclick="handleFingerprintSignup()">
+                <span class="fp-icon">👆</span> Sign Up with Fingerprint
+            </button>
+            <p class="auth-footer">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/webauthn.js' %}"></script>
+<script>
+(function() {
+    if (!isMobile() || !supportsWebAuthn()) return;
+    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(available) {
+        if (available) document.getElementById('fpSignupBtn').style.display = 'block';
+    });
+})();
+function handleFingerprintSignup() {
+    var btn = document.getElementById('fpSignupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Scanning fingerprint...';
+    registerFingerprint().then(function(data) {
+        window.location.href = '/profile/';
+    }).catch(function(err) {
+        alert('Fingerprint signup failed: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
+    });
+}
+</script>
+{% endblock %}

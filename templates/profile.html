@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container narrow">
+        <div class="page-header text-center" style="margin-bottom:2rem">
+            <div class="profile-avatar" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--red));color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;margin:0 auto 1rem">{{ user.avatar_letter }}</div>
+            <h1>{{ user.username }}</h1>
+            <p class="lead">{{ user.get_role_display }}</p>
+            {% if user.is_fingerprint_user %}
+            <p><span class="badge badge-fingerprint">🔐 Fingerprint User</span></p>
+            {% endif %}
+        </div>
+
+        {% if user.is_fingerprint_user and not user.has_upgraded %}
+        <div class="detail-section" style="margin-bottom:1.5rem;text-align:center;background:var(--blue-light);border-color:var(--blue);padding:1.5rem">
+            <h3 style="margin-bottom:.5rem">🔐 Attach Email &amp; Password</h3>
+            <p style="font-size:.875rem;color:var(--gray-600);margin-bottom:1rem">Set up email and password so you can log in even if you lose your device.</p>
+            <a href="{% url 'attach_email_password' %}" class="btn btn-primary">Attach Email &amp; Password</a>
+        </div>
+        {% endif %}
+
+        <form method="post" class="dashboard-form narrow" style="margin:0 auto">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" value="{{ user.username }}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email" name="email" id="id_email" class="form-control" value="{{ user.email }}" placeholder="your@email.com">
+            </div>
+            <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--gray-100)">
+            <h3 style="font-size:1rem;margin-bottom:1rem">Change Password</h3>
+            <div class="form-group">
+                <label for="id_current_password">Current Password</label>
+                <input type="password" name="current_password" id="id_current_password" class="form-control" placeholder="Leave blank to keep same">
+            </div>
+            <div class="form-group">
+                <label for="id_new_password1">New Password</label>
+                <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="Min 8 characters">
+            </div>
+            <div class="form-group">
+                <label for="id_new_password2">Confirm New Password</label>
+                <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Re-enter new password">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'home' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

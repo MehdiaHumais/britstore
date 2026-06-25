@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Apps{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'dashboard/sidebar.html' %}
+    <div class="dashboard-main">
+        <div class="dashboard-header flex-between">
+            <div>
+                <h1>Manage Apps</h1>
+            </div>
+            <a href="{% url 'dashboard_upload' %}" class="btn btn-primary">+ Upload App</a>
+        </div>
+        <div class="table-responsive">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>App</th>
+                        <th>Category</th>
+                        <th>Version</th>
+                        <th>Downloads</th>
+                        <th>Status</th>
+                        <th>Uploaded By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in apps %}
+                    <tr>
+                        <td>
+                            <div class="table-app">
+                                {% if app.icon %}<img src="{{ app.icon.url }}" alt="">{% endif %}
+                                {{ app.name }}
+                            </div>
+                        </td>
+                        <td>{{ app.category.name }}</td>
+                        <td>v{{ app.version }}</td>
+                        <td>{{ app.download_count }}</td>
+                        <td>
+                            {% if app.published %}<span class="badge badge-success">Published</span>
+                            {% else %}<span class="badge badge-muted">Draft</span>{% endif %}
+                            {% if app.featured %}<span class="badge badge-featured">Featured</span>{% endif %}
+                        </td>
+                        <td>{{ app.uploaded_by.username|default:"—" }}</td>
+                        <td class="actions-cell">
+                            <a href="{% url 'dashboard_edit_app' app.slug %}" class="btn btn-outline btn-sm">Edit</a>
+                            {% if user.is_super_admin %}
+                            <a href="{% url 'dashboard_toggle_publish' app.slug %}" class="btn btn-outline btn-sm">
+                                {% if app.published %}Unpublish{% else %}Publish{% endif %}
+                            </a>
+                            <form method="post" action="{% url 'dashboard_delete_app' app.slug %}" style="display:inline" onsubmit="return confirm('Delete &quot;{{ app.name }}&quot;? This cannot be undone.')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-muted">No apps yet. <a href="{% url 'dashboard_upload' %}">Upload one</a></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

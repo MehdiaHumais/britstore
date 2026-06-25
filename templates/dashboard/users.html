@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    {% include 'dashboard/sidebar.html' %}
+    <div class="dashboard-main">
+        <div class="dashboard-header flex-between">
+            <h1>All Users</h1>
+            <a href="{% url 'dashboard_user_create' %}" class="btn btn-primary">+ Add User</a>
+        </div>
+        <table class="dash-table">
+            <thead><tr><th>Username</th><th>Email</th><th>Auth</th><th>Role</th><th>Downloads</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email|default:'—' }}</td>
+                    <td>
+                        {% if u.is_fingerprint_user %}
+                        <span class="badge badge-fingerprint">🔐 Fingerprint</span>
+                        {% if u.has_upgraded %}<span class="badge badge-success" style="font-size:.65rem">Upgraded</span>{% endif %}
+                        {% else %}
+                        <span class="badge badge-muted">Password</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge">{{ u.get_role_display }}</span></td>
+                    <td>{{ u.download_count }}</td>
+                    <td>{% if u.is_active %}Yes{% else %}No{% endif %}</td>
+                    <td>
+                        <a href="{% url 'dashboard_user_edit' u.pk %}" class="btn btn-outline btn-sm">Edit</a>
+                        {% if u != user %}
+                        <form method="post" action="{% url 'dashboard_user_delete' u.pk %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete user?')">Delete</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}

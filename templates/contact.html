@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container narrow">
+        <div class="page-header">
+            <h1>Contact Us</h1>
+            <p>Have a question or need support? Send us a message.</p>
+        </div>
+        <form method="post" class="contact-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+        <p class="contact-email">Or email us directly at <a href="mailto:{{ site_settings.support_email }}">{{ site_settings.support_email }}</a></p>
+    </div>
+</section>
+{% endblock %}

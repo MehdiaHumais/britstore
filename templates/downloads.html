@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Apps{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>{% if query %}Results for "{{ query }}"{% else %}All Apps{% endif %}</h1>
+            <p>Browse all available BritStore applications — latest versions listed first</p>
+        </div>
+        {% if apps %}
+        <div class="downloads-table-wrap">
+            <table class="downloads-table">
+                <thead>
+                    <tr>
+                        <th>App</th>
+                        <th>Category</th>
+                        <th>Version</th>
+                        <th>Size</th>
+                        <th>Downloads</th>
+                        <th>Updated</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in apps %}
+                    <tr>
+                        <td>
+                            <div class="table-app">
+                                {% if app.icon %}<img src="{{ app.icon.url }}" alt="">{% endif %}
+                                <a href="{% url 'app_detail' app.slug %}">{{ app.name }}</a>
+                            </div>
+                        </td>
+                        <td>{{ app.category.name }}</td>
+                        <td>v{{ app.version }}</td>
+                        <td>{{ app.file_size_display }}</td>
+                        <td>{{ app.download_count }}</td>
+                        <td>{{ app.updated_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'app_detail' app.slug %}" class="btn btn-outline btn-sm">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>{% if query %}No apps found for "{{ query }}"{% else %}No apps available for download yet.{% endif %}</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

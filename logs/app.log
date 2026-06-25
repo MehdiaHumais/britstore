@@ -1,0 +1,875 @@
+INFO 2026-06-23 15:15:42,837 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 15:47:33,235 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-23 15:48:00,908 log Not Found: /favicon.ico
+INFO 2026-06-23 15:50:14,585 autoreload C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\ExifTags.py changed, reloading.
+INFO 2026-06-23 15:54:36,349 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 15:55:52,897 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 15:56:03,142 services Upload validated: app-debug.apk (4337878 bytes)
+INFO 2026-06-23 15:56:49,295 services Upload validated: app-debug.apk (4337878 bytes)
+ERROR 2026-06-23 15:56:49,767 log Internal Server Error: /dashboard/apps/brittrade/versions/add/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\permissions.py", line 16, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\permissions.py", line 57, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 323, in add_version
+    form.save()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\forms\models.py", line 554, in save
+    self.instance.save()
+  File "D:\sir projectss\company app store\store\models.py", line 213, in save
+    super().save(*args, **kwargs)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1873, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1881, in execute_sql
+    for sql, params in self.as_sql():
+                       ^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1804, in as_sql
+    value_rows = [
+                 ^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1805, in <listcomp>
+    [
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1806, in <listcomp>
+    self.prepare_value(field, self.pre_save_val(field, obj))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1750, in pre_save_val
+    return field.pre_save(obj, add=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\files.py", line 338, in pre_save
+    file.save(file.name, file.file, save=False)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\files.py", line 98, in save
+    name = self.field.generate_filename(self.instance, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\files.py", line 353, in generate_filename
+    filename = self.upload_to(instance, filename)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\models.py", line 189, in version_apk_path
+    return f'apk/{instance.app.slug}-v{instance.version}-{filename}'
+                  ^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 271, in __get__
+    raise self.RelatedObjectDoesNotExist(
+store.models.AppVersion.app.RelatedObjectDoesNotExist: AppVersion has no app.
+INFO 2026-06-23 15:57:02,733 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 15:57:13,062 services Updating app brittrade to same version 1.1
+INFO 2026-06-23 15:57:13,064 services Upload validated: apk/brittrade-app-debug.apk (4337878 bytes)
+ERROR 2026-06-23 15:57:18,309 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 68, in home
+    return render(request, 'home.html', {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 172, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 164, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 1018, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 1018, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 979, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 164, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 1018, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 1018, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 979, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 1018, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 1018, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 979, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\defaulttags.py", line 326, in render
+    if match:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 400, in __bool__
+    self._fetch_all()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 133, in __iter__
+    setattr(obj, attr_name, row[col_pos])
+AttributeError: property 'app_count' of 'Category' object has no setter
+INFO 2026-06-23 15:58:59,372 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-23 15:58:59,561 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-23 15:59:02,309 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:20:45,952 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-23 16:20:52,034 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:21:01,943 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:21:05,580 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:21:12,693 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:21:16,635 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:21:21,611 autoreload D:\sir projectss\company app store\store\urls.py changed, reloading.
+INFO 2026-06-23 16:21:25,661 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:23:23,701 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:23:26,342 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:23:37,958 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:23:40,816 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:24:11,328 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:46:12,738 autoreload Watching for file changes with StatReloader
+ERROR 2026-06-23 16:48:47,731 log Internal Server Error: /signup/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 169, in signup_view
+    messages.success(request, f'Welcome to {WebsiteSettings.get_solo().site_name}, {user.username}!')
+                                            ^^^^^^^^^^^^^^^
+NameError: name 'WebsiteSettings' is not defined
+INFO 2026-06-23 16:49:16,868 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:49:19,529 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:49:29,790 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:49:32,285 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 16:49:46,097 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-23 16:49:48,644 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-23 16:50:04,544 log Forbidden (CSRF token from POST incorrect.): /signup/
+WARNING 2026-06-23 16:50:10,905 log Forbidden (CSRF token from POST incorrect.): /signup/
+INFO 2026-06-23 16:50:25,892 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 17:04:10,434 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 20:49:13,913 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 20:50:22,778 autoreload Watching for file changes with StatReloader
+ERROR 2026-06-23 20:50:58,255 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "store_websitesettings" does not exist
+LINE 1: ...email", "store_websitesettings"."updated_at" FROM "store_web...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 70, in home
+    return render(request, 'home.html', {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 170, in render
+    with context.bind_template(self):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\context.py", line 259, in bind_template
+    context = processor(self.request)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\context_processors.py", line 10, in site_context
+    settings_obj = WebsiteSettings.get_solo()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\models.py", line 65, in get_solo
+    obj, _ = cls.objects.get_or_create(pk=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 368, in __len__
+    self._fetch_all()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "store_websitesettings" does not exist
+LINE 1: ...email", "store_websitesettings"."updated_at" FROM "store_web...
+                                                             ^
+
+WARNING 2026-06-23 20:50:58,796 log Not Found: /favicon.ico
+ERROR 2026-06-23 20:53:00,049 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "store_websitesettings" does not exist
+LINE 1: ...email", "store_websitesettings"."updated_at" FROM "store_web...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 70, in home
+    return render(request, 'home.html', {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 170, in render
+    with context.bind_template(self):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\context.py", line 259, in bind_template
+    context = processor(self.request)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\context_processors.py", line 10, in site_context
+    settings_obj = WebsiteSettings.get_solo()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\models.py", line 65, in get_solo
+    obj, _ = cls.objects.get_or_create(pk=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 368, in __len__
+    self._fetch_all()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "store_websitesettings" does not exist
+LINE 1: ...email", "store_websitesettings"."updated_at" FROM "store_web...
+                                                             ^
+
+ERROR 2026-06-23 20:53:04,148 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "store_websitesettings" does not exist
+LINE 1: ...email", "store_websitesettings"."updated_at" FROM "store_web...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 70, in home
+    return render(request, 'home.html', {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 170, in render
+    with context.bind_template(self):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\context.py", line 259, in bind_template
+    context = processor(self.request)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\context_processors.py", line 10, in site_context
+    settings_obj = WebsiteSettings.get_solo()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\models.py", line 65, in get_solo
+    obj, _ = cls.objects.get_or_create(pk=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 368, in __len__
+    self._fetch_all()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "store_websitesettings" does not exist
+LINE 1: ...email", "store_websitesettings"."updated_at" FROM "store_web...
+                                                             ^
+
+INFO 2026-06-23 20:56:18,453 autoreload Watching for file changes with StatReloader
+INFO 2026-06-23 21:39:29,595 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-23 21:39:43,768 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:39:43,771 log Not Found: /static/js/app.js
+WARNING 2026-06-23 21:39:53,396 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:39:53,401 log Not Found: /static/js/app.js
+WARNING 2026-06-23 21:40:03,943 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:40:03,946 log Not Found: /static/js/app.js
+WARNING 2026-06-23 21:40:08,374 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:40:08,381 log Not Found: /static/js/app.js
+INFO 2026-06-23 21:41:01,595 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-23 21:41:13,146 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:41:13,184 log Not Found: /static/js/app.js
+WARNING 2026-06-23 21:42:09,726 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:42:09,732 log Not Found: /static/js/app.js
+WARNING 2026-06-23 21:42:56,726 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:42:56,877 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-23 21:43:39,163 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-23 21:43:39,172 log Not Found: /static/css/style.css
+WARNING 2026-06-23 21:43:39,273 log Not Found: /static/js/app.js
+INFO 2026-06-23 21:44:32,023 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-23 21:47:42,216 services Resend email failed to britsyncuk@gmail.com: The gmail.com domain is not verified. Please, add and verify your domain on https://resend.com/domains
+WARNING 2026-06-23 21:48:28,724 log Not Found: /favicon.ico
+WARNING 2026-06-23 21:49:36,849 services Resend email failed to alihamas21280811@gmail.com: The gmail.com domain is not verified. Please, add and verify your domain on https://resend.com/domains
+WARNING 2026-06-23 21:52:44,392 services Resend email failed to alihamas21280811@gmail.com: The gmail.com domain is not verified. Please, add and verify your domain on https://resend.com/domains
+WARNING 2026-06-23 21:54:57,687 services Resend email failed to alihamas21280811@gmail.com: The gmail.com domain is not verified. Please, add and verify your domain on https://resend.com/domains
+INFO 2026-06-24 08:34:20,530 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 08:34:49,237 log Not Found: /favicon.ico
+WARNING 2026-06-24 08:35:28,627 log Not Found: /favicon.ico
+INFO 2026-06-24 08:44:04,244 services Upload validated: app-debug.apk (4337878 bytes)
+ERROR 2026-06-24 08:52:06,483 log Internal Server Error: /downloads/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 279, in ensure_connection
+    self.connect()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\postgresql\base.py", line 332, in get_new_connection
+    connection = self.Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: connection to server at "ep-spring-cake-aildm0gp-pooler.c-4.us-east-1.aws.neon.tech" (2600:1f10:44f9:7118:cff2:eefe:417d:e5d2), port 5432 failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 120, in downloads_view
+    return render(request, 'downloads.html', {'apps': apps})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 170, in render
+    with context.bind_template(self):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\context.py", line 259, in bind_template
+    context = processor(self.request)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\context_processors.py", line 10, in site_context
+    settings_obj = WebsiteSettings.get_solo()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\models.py", line 65, in get_solo
+    obj, _ = cls.objects.get_or_create(pk=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 368, in __len__
+    self._fetch_all()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 320, in cursor
+    return self._cursor()
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 279, in ensure_connection
+    self.connect()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\postgresql\base.py", line 332, in get_new_connection
+    connection = self.Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: connection to server at "ep-spring-cake-aildm0gp-pooler.c-4.us-east-1.aws.neon.tech" (2600:1f10:44f9:7118:cff2:eefe:417d:e5d2), port 5432 failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+ERROR 2026-06-24 08:52:27,154 log Internal Server Error: /downloads/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 279, in ensure_connection
+    self.connect()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\postgresql\base.py", line 332, in get_new_connection
+    connection = self.Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: connection to server at "ep-spring-cake-aildm0gp-pooler.c-4.us-east-1.aws.neon.tech" (2600:1f10:44f9:7118:cff2:eefe:417d:e5d2), port 5432 failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 120, in downloads_view
+    return render(request, 'downloads.html', {'apps': apps})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\base.py", line 170, in render
+    with context.bind_template(self):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\template\context.py", line 259, in bind_template
+    context = processor(self.request)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\context_processors.py", line 10, in site_context
+    settings_obj = WebsiteSettings.get_solo()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\models.py", line 65, in get_solo
+    obj, _ = cls.objects.get_or_create(pk=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 631, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 368, in __len__
+    self._fetch_all()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1621, in execute_sql
+    cursor = self.connection.cursor()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 320, in cursor
+    return self._cursor()
+           ^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 296, in _cursor
+    self.ensure_connection()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 278, in ensure_connection
+    with self.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 279, in ensure_connection
+    self.connect()
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\base\base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\postgresql\base.py", line 332, in get_new_connection
+    connection = self.Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\psycopg2\__init__.py", line 135, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: connection to server at "ep-spring-cake-aildm0gp-pooler.c-4.us-east-1.aws.neon.tech" (2600:1f10:44f9:7118:cff2:eefe:417d:e5d2), port 5432 failed: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+INFO 2026-06-24 09:31:04,839 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 09:34:11,946 services Upload validated: app-debug.apk (4337878 bytes)
+INFO 2026-06-24 10:06:53,398 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-24 10:07:09,624 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:08:00,992 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:08:02,599 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:08:13,418 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:08:15,338 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:08:19,904 autoreload D:\sir projectss\company app store\store\forms.py changed, reloading.
+INFO 2026-06-24 10:08:21,848 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:08:26,530 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:08:28,803 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:09:07,438 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:09:09,951 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:09:20,684 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:09:23,022 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:10:55,417 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:10:58,717 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:14:09,876 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:17:54,912 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:17:59,420 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:20:50,881 services Email sent to britsyncuk@gmail.com via Resend: {'id': '677b3181-0b9d-4aae-8b17-cb8938d93192', 'http_headers': {'Date': 'Wed, 24 Jun 2026 05:20:50 GMT', 'Content-Type': 'application/json', 'Content-Length': '45', 'Connection': 'keep-alive', 'ratelimit-limit': '2', 'ratelimit-policy': '2;w=1', 'ratelimit-remaining': '1', 'ratelimit-reset': '1', 'x-resend-daily-quota': '1', 'x-resend-monthly-quota': '1', 'cf-cache-status': 'DYNAMIC', 'Server': 'cloudflare', 'CF-RAY': 'a109491a4a3ffd3b-SIN'}}
+INFO 2026-06-24 10:21:20,547 services Email sent to alihamas21280811@gmail.com via Resend: {'id': 'b831118d-c76f-4759-a3b3-a2167f33f84a', 'http_headers': {'Date': 'Wed, 24 Jun 2026 05:21:20 GMT', 'Content-Type': 'application/json', 'Content-Length': '45', 'Connection': 'keep-alive', 'ratelimit-limit': '2', 'ratelimit-policy': '2;w=1', 'ratelimit-remaining': '1', 'ratelimit-reset': '1', 'x-resend-daily-quota': '2', 'x-resend-monthly-quota': '2', 'cf-cache-status': 'DYNAMIC', 'Server': 'cloudflare', 'CF-RAY': 'a10949d34b34ce1d-SIN'}}
+INFO 2026-06-24 10:26:58,486 services Upload validated: app-debug.apk (5844829 bytes)
+INFO 2026-06-24 10:27:28,994 services Upload validated: app-debug.apk (5844829 bytes)
+INFO 2026-06-24 10:27:39,920 services Upload validated: app-debug.apk (5844829 bytes)
+INFO 2026-06-24 10:28:31,835 services Upload validated: app-debug.apk (5844829 bytes)
+WARNING 2026-06-24 10:35:51,714 log Not Found: /app/leadhunter/
+WARNING 2026-06-24 10:38:10,137 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-24 10:44:08,879 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:44:12,898 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:45:49,883 autoreload D:\sir projectss\company app store\config\urls.py changed, reloading.
+INFO 2026-06-24 10:45:52,855 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:46:31,429 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-24 10:46:34,354 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:47:14,352 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:47:17,238 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:47:38,965 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:47:42,198 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:47:57,674 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:48:00,643 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:49:13,935 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:49:15,649 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:49:26,709 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:49:28,294 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:49:38,074 autoreload D:\sir projectss\company app store\store\urls.py changed, reloading.
+INFO 2026-06-24 10:49:39,734 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:50:04,095 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 10:50:05,729 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 10:53:06,209 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 10:53:37,649 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:53:39,878 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:53:52,770 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:53:55,926 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:53:59,827 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:54:12,595 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:54:18,354 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:54:18,391 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:54:20,706 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:54:25,328 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 10:54:35,802 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-24 10:56:52,936 services Upload validated: app-debug.apk (5844829 bytes)
+WARNING 2026-06-24 11:00:13,232 log Not Found: /app/leadhunter/
+INFO 2026-06-24 11:05:19,670 services Email sent to britsyncuk@gmail.com via Resend: {'id': '01e15765-bdcd-4a2f-bf2c-ce59ad091886', 'http_headers': {'Date': 'Wed, 24 Jun 2026 06:05:19 GMT', 'Content-Type': 'application/json', 'Content-Length': '45', 'Connection': 'keep-alive', 'ratelimit-limit': '2', 'ratelimit-policy': '2;w=1', 'ratelimit-remaining': '1', 'ratelimit-reset': '1', 'x-resend-daily-quota': '3', 'x-resend-monthly-quota': '3', 'cf-cache-status': 'DYNAMIC', 'Server': 'cloudflare', 'CF-RAY': 'a1098a442f673d86-SIN'}}
+INFO 2026-06-24 11:05:39,880 services Email sent to alihamas21280811@gmail.com via Resend: {'id': 'f05ab51a-83c5-4087-9ac7-56bacbfc886e', 'http_headers': {'Date': 'Wed, 24 Jun 2026 06:05:39 GMT', 'Content-Type': 'application/json', 'Content-Length': '45', 'Connection': 'keep-alive', 'ratelimit-limit': '2', 'ratelimit-policy': '2;w=1', 'ratelimit-remaining': '1', 'ratelimit-reset': '1', 'x-resend-daily-quota': '4', 'x-resend-monthly-quota': '4', 'cf-cache-status': 'DYNAMIC', 'Server': 'cloudflare', 'CF-RAY': 'a1098ac1b9911e38-SIN'}}
+WARNING 2026-06-24 11:07:14,425 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:07:34,905 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:07:41,822 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:07:56,910 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:08:01,072 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:08:23,430 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:08:30,327 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:08:32,652 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:08:38,617 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:08:45,836 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:09:03,462 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:09:13,073 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-24 11:33:18,571 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-24 11:33:22,314 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:34:13,720 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 11:34:21,700 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:34:34,129 autoreload D:\sir projectss\company app store\config\settings.py changed, reloading.
+INFO 2026-06-24 11:34:38,765 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:36:35,035 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:36:59,398 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 11:36:59,598 log Not Found: /webauthn/register/begin/
+WARNING 2026-06-24 11:37:32,549 log Not Found: /webauthn/register/begin/
+WARNING 2026-06-24 11:37:53,858 log Not Found: /webauthn/register/begin/
+INFO 2026-06-24 11:37:56,092 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 11:38:34,516 log Not Found: /webauthn/register/begin/
+INFO 2026-06-24 11:38:38,617 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:39:14,467 autoreload Watching for file changes with StatReloader
+ERROR 2026-06-24 11:39:17,859 log Internal Server Error: /webauthn/register/begin/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 281, in webauthn_register_begin
+    return JsonResponse(options.model_dump(mode='json'), safe=False)
+                        ^^^^^^^^^^^^^^^^^^
+AttributeError: 'PublicKeyCredentialCreationOptions' object has no attribute 'model_dump'
+INFO 2026-06-24 11:39:31,817 autoreload Watching for file changes with StatReloader
+ERROR 2026-06-24 11:39:32,206 log Internal Server Error: /webauthn/register/begin/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 281, in webauthn_register_begin
+    return JsonResponse(options.model_dump(mode='json'), safe=False)
+                        ^^^^^^^^^^^^^^^^^^
+AttributeError: 'PublicKeyCredentialCreationOptions' object has no attribute 'model_dump'
+INFO 2026-06-24 11:40:28,619 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 11:40:29,846 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 11:41:11,373 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:41:30,928 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:41:47,284 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 11:41:47,633 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 11:42:02,363 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:42:29,996 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:42:49,106 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 11:42:54,684 log Not Found: /webauthn/login/begin/
+WARNING 2026-06-24 11:42:56,904 log Bad Request: /webauthn/login/begin/
+INFO 2026-06-24 11:43:11,228 autoreload Watching for file changes with StatReloader
+INFO 2026-06-24 11:46:39,498 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 11:47:04,546 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:47:08,602 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:47:11,340 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:48:48,973 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:48:57,781 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:49:03,775 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:50:46,027 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:50:51,361 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-24 11:50:56,780 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-24 19:48:16,453 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-24 19:48:40,490 log Not Found: /favicon.ico
+WARNING 2026-06-24 19:48:42,410 log Not Found: /favicon.ico
+INFO 2026-06-24 19:59:25,451 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-24 19:59:44,233 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 11:55:33,855 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-25 11:55:50,361 log Not Found: /favicon.ico
+ERROR 2026-06-25 12:17:20,316 log Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\http\request.py", line 203, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+INFO 2026-06-25 12:19:53,810 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-25 12:20:06,148 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 12:21:16,404 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-25 12:22:27,417 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-25 12:25:29,716 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-06-25 12:25:39,547 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 12:29:52,753 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 13:05:11,874 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 13:15:25,859 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-25 13:23:38,234 log Not Found: /favicon.ico
+INFO 2026-06-25 13:37:18,340 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-06-25 13:37:30,060 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 13:38:42,001 autoreload D:\sir projectss\company app store\store\forms.py changed, reloading.
+INFO 2026-06-25 13:39:00,501 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 13:43:04,170 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 13:52:12,809 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 14:39:39,996 autoreload Watching for file changes with StatReloader
+INFO 2026-06-25 18:25:26,936 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-25 18:29:39,690 log Not Found: /favicon.ico

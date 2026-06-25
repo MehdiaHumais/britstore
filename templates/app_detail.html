@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ app.name }}{% endblock %}
+
+{% block content %}
+<section class="section app-detail-page">
+    <div class="container">
+        <div class="app-detail-header">
+            <div class="app-detail-icon">
+                {% if app.icon %}
+                <img src="{{ app.icon.url }}" alt="{{ app.name }}">
+                {% endif %}
+            </div>
+            <div class="app-detail-info">
+                <div style="margin-bottom:.5rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center">
+                    <span class="badge">{{ app.category.name }}</span>
+                    <span class="age-badge {% if app.age_rating == 'all' %}all{% elif app.age_rating == '12+' %}age12{% elif app.age_rating == '16+' %}age16{% elif app.age_rating == '18+' %}age18{% endif %}">{{ app.age_rating|upper }}</span>
+                    <span class="price-badge {% if app.price_type == 'free' %}free{% else %}paid{% endif %}">
+                        {% if app.price_type == 'free' %}Free{% else %}${{ app.price }}{% endif %}
+                    </span>
+                    {% if app.featured %}<span class="badge badge-success">Featured</span>{% endif %}
+                </div>
+                <h1>{{ app.name }}</h1>
+                <p class="app-short-desc">{{ app.short_description }}</p>
+                <div class="rating-section">
+                    <div class="rating-stars-display" id="ratingStars" {% if user.is_authenticated %}style="cursor:pointer"{% endif %}>
+                        {% for i in "12345"|make_list %}
+                        <span class="star {% if forloop.counter <= app.avg_rating_int %}filled{% else %}empty{% endif %}" data-score="{{ forloop.counter }}" {% if user.is_authenticated %}onclick="rateApp({{ app.id }}, {{ forloop.counter }})"{% endif %}>★</span>
+                        {% endfor %}
+                    </div>
+                    <div class="rating-number">
+                        {{ app.avg_rating|floatformat:1 }} ({{ app.rating_count }})
+                    </div>
+                    <button class="share-btn" onclick="shareApp()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        Share
+                    </button>
+                </div>
+                <div class="app-detail-meta">
+                    <span><strong>Version:</strong> {{ app.version }}</span>
+                    <span><strong>Size:</strong> {{ app.file_size_display }}</span>
+                    <span><strong>Downloads:</strong> {{ app.download_count }}</span>
+                </div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'download_app' app.slug %}" class="btn btn-primary btn-lg">
+                    Download Latest (v{{ app.version }})
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}?next={% url 'app_detail' app.slug %}" class="btn btn-primary btn-lg">
+                    Login to Download
+                </a>
+                <p class="login-hint">Sign in to download apps</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if mobile_screenshots or tablet_screenshots %}
+        <div class="screenshots-section">
+            <h2 style="font-size:1.05rem;font-weight:600;margin-bottom:.75rem">Screenshots</h2>
+            <div class="screenshot-type-tabs">
+                <button class="active" onclick="showScreenshots('mobile', this)">Phone ({{ mobile_screenshots|length }})</button>
+                {% if tablet_screenshots %}
+                <button onclick="showScreenshots('tablet', this)">Tablet ({{ tablet_screenshots|length }})</button>
+                {% endif %}
+                <button onclick="showScreenshots('all', this)">All ({{ screenshots|length }})</button>
+            </div>
+            <div class="screenshots-grid" id="screenshotGrid">
+                {% for shot in mobile_screenshots %}
+                <img src="{{ shot.image.url }}" alt="Mobile screenshot {{ forloop.counter }}" class="screenshot" data-type="mobile" onclick="openLightbox({{ forloop.counter0 }})">
+                {% endfor %}
+                {% for shot in tablet_screenshots %}
+                <img src="{{ shot.image.url }}" alt="Tablet screenshot {{ forloop.counter }}" class="screenshot" data-type="tablet" onclick="openLightbox({{ mobile_screenshots|length|add:forloop.counter0 }})">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <button class="lightbox-prev" onclick="prevLightbox()">&#8249;</button>
+            <img class="lightbox-img" id="lightboxImg" src="" alt="">
+            <button class="lightbox-next" onclick="nextLightbox()">&#8250;</button>
+            <div class="lightbox-counter" id="lightboxCounter"></div>
+        </div>
+        {% endif %}
+
+        <div class="detail-sections">
+            <div class="detail-section">
+                <h2>About this app</h2>
+                <div class="prose">{{ app.full_description|linebreaks }}</div>
+            </div>
+            {% if app.release_notes %}
+            <div class="detail-section">
+                <h2>What's New</h2>
+                <div class="prose">{{ app.release_notes|linebreaks }}</div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if versions %}
+        <div style="margin-top:1.5rem">
+            <h2 style="font-size:1.05rem;font-weight:600;margin-bottom:.75rem">Past Versions</h2>
+            <div class="versions-list">
+                {% for ver in versions %}
+                <div class="version-item">
+                    <div>
+                        <strong>v{{ ver.version }}</strong>
+                        <span class="text-muted"> &middot; {{ ver.file_size_display }} &middot; {{ ver.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'download_version' app.slug ver.version %}" class="btn btn-outline btn-sm">Download</a>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={% url 'app_detail' app.slug %}" class="btn btn-outline btn-sm">Login</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if similar_apps %}
+        <div style="margin-top:1.5rem">
+            <div class="section-header">
+                <h2 style="font-size:1.05rem;font-weight:600">Similar Apps</h2>
+                <a href="{% url 'category' app.category.slug %}" style="font-size:.8rem;color:var(--gray-500)">View all</a>
+            </div>
+            <div class="similar-apps-grid">
+                {% for sa in similar_apps %}
+                <a href="{% url 'app_detail' sa.slug %}" class="similar-app-item">
+                    {% if sa.icon %}<img src="{{ sa.icon.url }}" alt="{{ sa.name }}">{% endif %}
+                    <div class="name">{{ sa.name|truncatechars:18 }}</div>
+                    <div class="rating">
+                        <span class="star filled">★</span>
+                        <span>{{ sa.avg_rating|floatformat:1 }}</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+var allImages = [
+    {% for shot in screenshots %}
+    "{{ shot.image.url }}"{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+var currentIndex = 0;
+
+function openLightbox(index) {
+    currentIndex = index;
+    document.getElementById('lightboxImg').src = allImages[currentIndex];
+    document.getElementById('lightbox').classList.add('active');
+    updateCounter();
+}
+function closeLightbox(e) {
+    if (!e || e.target === e.currentTarget || e.target.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('active');
+    }
+}
+function prevLightbox() {
+    currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+    document.getElementById('lightboxImg').src = allImages[currentIndex];
+    updateCounter();
+}
+function nextLightbox() {
+    currentIndex = (currentIndex + 1) % allImages.length;
+    document.getElementById('lightboxImg').src = allImages[currentIndex];
+    updateCounter();
+}
+function updateCounter() {
+    document.getElementById('lightboxCounter').textContent = (currentIndex + 1) + ' / ' + allImages.length;
+}
+document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') prevLightbox();
+    if (e.key === 'ArrowRight') nextLightbox();
+});
+function showScreenshots(type, btn) {
+    document.querySelectorAll('.screenshot-type-tabs button').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.screenshot').forEach(function(img) {
+        img.style.display = (type === 'all' || img.dataset.type === type) ? '' : 'none';
+    });
+}
+
+function shareApp() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ app.name }}',
+            text: '{{ app.short_description }}',
+            url: window.location.href,
+        }).catch(function() {});
+    } else {
+        var dummy = document.createElement('input');
+        dummy.value = window.location.href;
+        document.body.appendChild(dummy);
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        var btn = document.querySelector('.share-btn');
+        var orig = btn.innerHTML;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+        setTimeout(function() { btn.innerHTML = orig; }, 2000);
+    }
+}
+
+function rateApp(appId, score) {
+    fetch('/rate/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: 'app_id=' + appId + '&score=' + score
+    }).then(function(r) { return r.json(); }).then(function(data) {
+        if (data.status === 'ok') {
+            document.querySelectorAll('#ratingStars .star').forEach(function(s, i) {
+                s.classList.toggle('filled', i < Math.round(data.avg));
+                s.classList.toggle('empty', i >= Math.round(data.avg));
+            });
+            document.querySelector('.rating-number').textContent = data.avg.toFixed(1) + ' (' + data.count + ')';
+        }
+    });
+}
+</script>
+{% endblock %}

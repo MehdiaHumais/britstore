@@ -1,0 +1,12 @@
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\AuthApplication.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\config\SecurityConfig.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\entity\User.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\repository\DeviceRepository.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\dto\AuthResponse.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\dto\RegisterRequest.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\controller\AuthController.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\repository\UserRepository.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\security\JwtService.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\entity\Device.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\service\AuthService.java
+E:\tools\finger print sighup\fingerprint-auth-server\src\main\java\com\auth\dto\UpgradeRequest.java
