@@ -7,6 +7,8 @@
     <title>{% block title %}{{ site_settings.site_name }}{% endblock %} | App Store</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -85,6 +87,40 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+
+    {% comment %}Mobile bottom nav — hidden on desktop{% endcomment %}
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="{% url 'home' %}" class="bottom-nav-item {% if request.path == '/' %}active{% endif %}" aria-label="Home">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="bn-label">Home</span>
+        </a>
+        <a href="{% url 'downloads' %}" class="bottom-nav-item {% if '/downloads' in request.path %}active{% endif %}" aria-label="Apps">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="bn-label">Apps</span>
+        </a>
+        {% if user.is_authenticated and user.can_access_dashboard %}
+        <a href="{% url 'dashboard_home' %}" class="bottom-nav-item {% if '/dashboard' in request.path %}active{% endif %}" aria-label="Dashboard">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="4" rx="1"/><rect x="4" y="10" width="16" height="4" rx="1"/><rect x="4" y="16" width="16" height="4" rx="1"/></svg>
+            <span class="bn-label">Dashboard</span>
+        </a>
+        {% else %}
+        <a href="{% url 'contact' %}" class="bottom-nav-item {% if '/contact' in request.path %}active{% endif %}" aria-label="Contact">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span class="bn-label">Contact</span>
+        </a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}" class="bottom-nav-item {% if '/profile' in request.path %}active{% endif %}" aria-label="Profile">
+            <span class="bn-avatar">{{ user.avatar_letter }}</span>
+            <span class="bn-label">Profile</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="bottom-nav-item {% if '/login' in request.path %}active{% endif %}" aria-label="Login">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <span class="bn-label">Login</span>
+        </a>
+        {% endif %}
+    </nav>
 
     <footer class="site-footer">
         <div class="container footer-grid">

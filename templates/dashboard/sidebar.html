@@ -1,7 +1,12 @@
-<aside class="dashboard-sidebar">
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open sidebar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<aside class="dashboard-sidebar" id="dashboardSidebar">
     <div class="sidebar-brand">
         <span class="logo-icon">BS</span>
         <span>BritStore Admin</span>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
     </div>
     <nav class="sidebar-nav">
         <a href="{% url 'dashboard_home' %}" class="{% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">

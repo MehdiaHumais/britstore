@@ -876,3 +876,17 @@ WARNING 2026-06-25 18:29:39,690 log Not Found: /favicon.ico
 INFO 2026-06-25 21:43:18,116 autoreload Watching for file changes with StatReloader
 INFO 2026-06-26 09:57:04,877 autoreload Watching for file changes with StatReloader
 WARNING 2026-06-26 10:00:20,787 log Not Found: /favicon.ico
+INFO 2026-06-27 08:40:19,824 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-27 08:40:29,261 log Not Found: /favicon.ico
+INFO 2026-06-27 12:51:36,892 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-27 12:51:49,925 log Not Found: /favicon.ico
+WARNING 2026-06-27 12:52:01,586 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:19:51,890 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-27 13:47:46,751 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-27 13:48:01,726 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:48:09,240 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:48:11,655 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:48:22,083 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:48:33,919 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:48:49,621 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-06-27 13:48:55,425 log Not Found: /.well-known/appspecific/com.chrome.devtools.json

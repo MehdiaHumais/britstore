@@ -760,9 +760,61 @@ a:hover { color: var(--black); }
 }
 
 /* Responsive */
+/* ── Bottom Nav (mobile) ── */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    z-index: 200;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 .25rem;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: .35rem .5rem;
+    color: var(--gray-400);
+    font-size: .65rem;
+    font-weight: 500;
+    transition: color .15s;
+    min-width: 56px;
+    text-decoration: none;
+}
+.bottom-nav-item:hover,
+.bottom-nav-item.active { color: var(--gray-900); }
+.bottom-nav-item svg { flex-shrink: 0; }
+.bn-label { font-size: .6rem; line-height: 1; }
+.bn-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gray-900);
+    color: #fff;
+    font-size: .6rem;
+    font-weight: 700;
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+}
+
 @media (max-width: 768px) {
-    .main-nav { display: none; }
-    .nav-toggle { display: block; }
+    .main-nav { display: none !important; }
+    .nav-toggle { display: none !important; }
+    .bottom-nav { display: flex; }
+    body { padding-bottom: 64px; }
     .hero { padding: 2rem 0 1.5rem; }
     .hero h1 { font-size: 1.5rem; }
     .app-detail-header { flex-direction: column; align-items: center; text-align: center; }
@@ -771,14 +823,32 @@ a:hover { color: var(--black); }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .auth-section { padding: 1.5rem 0; }
     .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .header-actions .btn { font-size: .75rem; padding: .25rem .6rem; }
+    .header-actions { gap: .3rem; }
 }
 
 @media (max-width: 480px) {
-    .app-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
-    .app-card { padding: .75rem; }
+    .app-grid { grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+    .app-card { padding: .6rem; }
+    .app-card-icon { margin-bottom: .35rem; }
+    .app-card h3 { font-size: .75rem; }
+    .app-detail-header { padding: 1rem; }
+    .app-detail-icon img { width: 64px; height: 64px; }
+    .app-detail-info h1 { font-size: 1.1rem; }
     .footer-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
-    .header-inner { gap: .35rem; }
+    .header-inner { gap: .25rem; height: 48px; }
+    .logo { font-size: .95rem; }
+    .logo img { height: 24px !important; }
     .auth-card { padding: 1.25rem; }
     .notif-dropdown { width: calc(100vw - 20px); right: -60px; }
+    .container { padding: 0 .85rem; }
+    .section { padding: 1rem 0; }
+    .section-header h2 { font-size: 1rem; }
+    .screenshot { height: 160px; }
+    .featured-card { flex: 0 0 220px; padding: 1rem; }
+    .featured-card-icon img { width: 56px; height: 56px; }
+    .similar-apps-grid { grid-template-columns: repeat(2, 1fr); }
+    .app-detail-meta { gap: .4rem 1rem; font-size: .75rem; }
+    .rating-stars-display .star { font-size: 1rem; }
 }
