@@ -890,3 +890,11 @@ WARNING 2026-06-27 13:48:22,083 log Not Found: /.well-known/appspecific/com.chro
 WARNING 2026-06-27 13:48:33,919 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2026-06-27 13:48:49,621 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2026-06-27 13:48:55,425 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-28 17:45:26,176 autoreload Watching for file changes with StatReloader
+INFO 2026-06-28 17:58:50,743 autoreload Watching for file changes with StatReloader
+INFO 2026-06-28 18:00:55,224 autoreload Watching for file changes with StatReloader
+INFO 2026-06-28 18:03:10,174 autoreload Watching for file changes with StatReloader
+INFO 2026-06-28 18:13:28,214 autoreload Watching for file changes with StatReloader
+INFO 2026-06-28 19:00:46,637 autoreload Watching for file changes with StatReloader
+WARNING 2026-06-28 19:01:21,065 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-06-28 19:34:41,758 autoreload Watching for file changes with StatReloader
