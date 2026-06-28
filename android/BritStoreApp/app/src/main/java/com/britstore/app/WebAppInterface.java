@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -144,6 +146,10 @@ public class WebAppInterface {
                 conn.setInstanceFollowRedirects(true);
                 conn.setConnectTimeout(30000);
                 conn.setReadTimeout(30000);
+                String cookies = CookieManager.getInstance().getCookie(url);
+                if (cookies != null) {
+                    conn.setRequestProperty("Cookie", cookies);
+                }
                 conn.connect();
 
                 int responseCode = conn.getResponseCode();
@@ -152,6 +158,7 @@ public class WebAppInterface {
                     return;
                 }
 
+                String contentType = conn.getContentType();
                 int length = conn.getContentLength();
                 File dir = new File(context.getCacheDir(), "downloads");
                 dir.mkdirs();
@@ -180,6 +187,16 @@ public class WebAppInterface {
                     return;
                 }
 
+                if (!isValidApk(apkFile)) {
+                    apkFile.delete();
+                    progress = -1;
+                    currentDownload = null;
+                    mainHandler.post(() ->
+                        Toast.makeText(context, "Download failed: server returned " + contentType,
+                                Toast.LENGTH_LONG).show());
+                    return;
+                }
+
                 progress = 100;
                 notifyProgress(100);
                 installApk(apkFile);
@@ -189,6 +206,16 @@ public class WebAppInterface {
                 notifyProgress(-1);
             } finally {
                 if (conn != null) conn.disconnect();
+            }
+        }
+
+        private boolean isValidApk(File file) {
+            try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+                byte[] magic = new byte[2];
+                raf.readFully(magic);
+                return magic[0] == 0x50 && magic[1] == 0x4B;
+            } catch (Exception e) {
+                return false;
             }
         }
 
