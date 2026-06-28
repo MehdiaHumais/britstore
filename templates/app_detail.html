@@ -43,9 +43,29 @@
                     <span><strong>Downloads:</strong> {{ app.download_count }}</span>
                 </div>
                 {% if user.is_authenticated %}
-                <a href="{% url 'download_app' app.slug %}" class="btn btn-primary btn-lg">
+                <a href="{% url 'download_app' app.slug %}" class="btn btn-primary btn-lg" id="downloadBtn">
                     Download Latest (v{{ app.version }})
                 </a>
+                <div id="androidBtnGroup" style="display:none;flex-wrap:wrap;gap:.5rem;align-items:center">
+                    <button class="btn btn-primary btn-lg" id="installBtn" onclick="androidInstall()">
+                        Install
+                    </button>
+                    <button class="btn btn-primary btn-lg" id="openBtn" style="display:none" onclick="androidOpen()">
+                        Open
+                    </button>
+                    <button class="btn btn-outline btn-lg" id="uninstallBtn" style="display:none" onclick="androidUninstall()">
+                        Uninstall
+                    </button>
+                    <div id="progressArea" style="display:none;flex:1;min-width:200px">
+                        <div style="display:flex;align-items:center;gap:.75rem">
+                            <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+                                <div id="progressBar" style="height:100%;width:0%;background:var(--gray-900);border-radius:3px;transition:width .3s"></div>
+                            </div>
+                            <span id="progressText" style="font-size:.8rem;color:var(--gray-500);min-width:2.5rem">0%</span>
+                            <button class="btn btn-outline btn-sm" onclick="androidCancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
                 {% else %}
                 <a href="{% url 'login' %}?next={% url 'app_detail' app.slug %}" class="btn btn-primary btn-lg">
                     Login to Download
@@ -206,6 +226,113 @@ function shareApp() {
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
         setTimeout(function() { btn.innerHTML = orig; }, 2000);
     }
+}
+
+/* ── Android App Integration ── */
+(function() {
+    var pkg = '{{ app.package_name }}';
+    var downloadBtn = document.getElementById('downloadBtn');
+    var androidBtns = document.getElementById('androidBtnGroup');
+    var installBtn = document.getElementById('installBtn');
+    var openBtn = document.getElementById('openBtn');
+    var uninstallBtn = document.getElementById('uninstallBtn');
+    var progressArea = document.getElementById('progressArea');
+    var progressBar = document.getElementById('progressBar');
+    var progressText = document.getElementById('progressText');
+
+    /* ── Browser test mode: add ?android_test=1 to URL to simulate Android app ── */
+    if (typeof Android === 'undefined' && location.search.indexOf('android_test=1') !== -1) {
+        window.Android = {
+            _installed: false,
+            getPlatform: function() { return 'android'; },
+            isAppInstalled: function(p) { return this._installed; },
+            downloadAndInstall: function(url, pkg) {
+                var self = this;
+                self._installed = false;
+                updateInstallState();
+                progressArea.style.display = 'flex';
+                installBtn.style.display = 'none';
+                openBtn.style.display = 'none';
+                uninstallBtn.style.display = 'none';
+                var pct = 0;
+                progressBar.style.width = '0%';
+                progressText.textContent = '0%';
+                var interval = setInterval(function() {
+                    pct += 5;
+                    if (pct > 100) pct = 100;
+                    progressBar.style.width = pct + '%';
+                    progressText.textContent = pct + '%';
+                    if (pct >= 100) {
+                        clearInterval(interval);
+                        self._installed = true;
+                        setTimeout(function() {
+                            progressArea.style.display = 'none';
+                            updateInstallState();
+                        }, 800);
+                    }
+                }, 200);
+            },
+            cancelDownload: function() {
+                progressArea.style.display = 'none';
+                updateInstallState();
+            },
+            openApp: function(p) { alert('Opening app: ' + p); },
+            uninstallApp: function(p) {
+                this._installed = false;
+                updateInstallState();
+            }
+        };
+    }
+
+    if (typeof Android !== 'undefined' && Android.getPlatform() === 'android') {
+        if (downloadBtn) downloadBtn.style.display = 'none';
+        if (androidBtns) androidBtns.style.display = 'flex';
+        updateInstallState();
+    }
+
+    window.onDownloadProgress = function(pct) {
+        if (pct < 0) {
+            progressArea.style.display = 'none';
+            updateInstallState();
+            return;
+        }
+        progressArea.style.display = 'flex';
+        installBtn.style.display = 'none';
+        openBtn.style.display = 'none';
+        uninstallBtn.style.display = 'none';
+        progressBar.style.width = pct + '%';
+        progressText.textContent = pct + '%';
+        if (pct >= 100) {
+            setTimeout(function() {
+                progressArea.style.display = 'none';
+                updateInstallState();
+            }, 1000);
+        }
+    };
+
+    function updateInstallState() {
+        if (!pkg) return;
+        if (typeof Android === 'undefined') return;
+        var installed = Android.isAppInstalled(pkg);
+        installBtn.style.display = installed ? 'none' : '';
+        openBtn.style.display = installed ? '' : 'none';
+        uninstallBtn.style.display = installed ? '' : 'none';
+    }
+})();
+
+function androidInstall() {
+    Android.downloadAndInstall(window.location.origin + '{% url 'download_app' app.slug %}', '{{ app.package_name }}');
+}
+function androidOpen() {
+    Android.openApp('{{ app.package_name }}');
+}
+function androidUninstall() {
+    if (confirm('Uninstall {{ app.name }}?')) {
+        Android.uninstallApp('{{ app.package_name }}');
+    }
+}
+function androidCancel() {
+    Android.cancelDownload();
 }
 
 function rateApp(appId, score) {
