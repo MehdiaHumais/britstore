@@ -1,13 +1,12 @@
 package com.britstore.app;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -19,17 +18,23 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebAppInterface {
 
     private Context context;
     private WebView webView;
-    private DownloadTask currentDownload;
+    private Handler mainHandler;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile DownloadTask currentDownload;
     private int lastProgress = -1;
 
     public WebAppInterface(Context context, WebView webView) {
         this.context = context;
         this.webView = webView;
+        this.mainHandler = new Handler(Looper.getMainLooper());
     }
 
     @JavascriptInterface
@@ -51,10 +56,10 @@ public class WebAppInterface {
     @JavascriptInterface
     public void downloadAndInstall(String url, String packageName) {
         if (currentDownload != null) {
-            currentDownload.cancel(true);
+            currentDownload.cancel();
         }
         currentDownload = new DownloadTask(url, packageName);
-        currentDownload.execute();
+        executor.submit(currentDownload);
     }
 
     @JavascriptInterface
@@ -66,11 +71,11 @@ public class WebAppInterface {
     @JavascriptInterface
     public void cancelDownload() {
         if (currentDownload != null) {
-            currentDownload.cancel(true);
+            currentDownload.cancel();
             currentDownload = null;
-            lastProgress = -1;
-            notifyProgress(-1);
         }
+        lastProgress = -1;
+        notifyProgress(-1);
     }
 
     @JavascriptInterface
@@ -78,6 +83,7 @@ public class WebAppInterface {
         try {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         } catch (Exception e) {
@@ -101,7 +107,7 @@ public class WebAppInterface {
         if (pct == lastProgress) return;
         lastProgress = pct;
         final int p = pct;
-        webView.post(() -> {
+        mainHandler.post(() -> {
             if (p >= 0) {
                 webView.evaluateJavascript(
                     "if(window.onDownloadProgress) onDownloadProgress(" + p + ");", null);
@@ -112,11 +118,11 @@ public class WebAppInterface {
         });
     }
 
-    private class DownloadTask extends AsyncTask<Void, Integer, File> {
+    private class DownloadTask implements Runnable {
         private String url;
         private String packageName;
-        private int progress = -1;
-        private boolean cancelled = false;
+        private volatile int progress = -1;
+        private AtomicBoolean cancelled = new AtomicBoolean(false);
 
         DownloadTask(String url, String packageName) {
             this.url = url;
@@ -125,17 +131,27 @@ public class WebAppInterface {
 
         int getProgress() { return progress; }
 
-        @Override
-        protected void onPreExecute() {
-            notifyProgress(0);
-        }
+        void cancel() { cancelled.set(true); }
 
         @Override
-        protected File doInBackground(Void... params) {
+        public void run() {
             HttpURLConnection conn = null;
             try {
-                conn = (HttpURLConnection) new URL(url).openConnection();
+                notifyProgress(0);
+
+                URL downloadUrl = new URL(url);
+                conn = (HttpURLConnection) downloadUrl.openConnection();
+                conn.setInstanceFollowRedirects(true);
+                conn.setConnectTimeout(30000);
+                conn.setReadTimeout(30000);
                 conn.connect();
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    notifyProgress(-1);
+                    return;
+                }
+
                 int length = conn.getContentLength();
                 File dir = new File(context.getCacheDir(), "downloads");
                 dir.mkdirs();
@@ -146,49 +162,34 @@ public class WebAppInterface {
                     byte[] buf = new byte[8192];
                     int total = 0, read;
                     while ((read = in.read(buf)) != -1) {
-                        if (isCancelled() || cancelled) {
+                        if (cancelled.get()) {
                             apkFile.delete();
-                            return null;
+                            return;
                         }
                         out.write(buf, 0, read);
                         total += read;
                         if (length > 0) {
                             progress = (int) (total * 100L / length);
-                            publishProgress(progress);
+                            notifyProgress(progress);
                         }
                     }
                 }
-                return apkFile;
+
+                if (cancelled.get()) {
+                    apkFile.delete();
+                    return;
+                }
+
+                progress = 100;
+                notifyProgress(100);
+                installApk(apkFile);
+                currentDownload = null;
+
             } catch (Exception e) {
-                return null;
+                notifyProgress(-1);
             } finally {
                 if (conn != null) conn.disconnect();
             }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            notifyProgress(values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(File apkFile) {
-            if (apkFile == null || !apkFile.exists()) {
-                notifyProgress(-1);
-                return;
-            }
-            progress = 100;
-            notifyProgress(100);
-            installApk(apkFile);
-            currentDownload = null;
-        }
-
-        @Override
-        protected void onCancelled(File result) {
-            if (result != null) result.delete();
-            progress = -1;
-            notifyProgress(-1);
-            currentDownload = null;
         }
 
         private void installApk(File apkFile) {
