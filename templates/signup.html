@@ -31,6 +31,9 @@
             <button id="fpSignupBtn" class="btn btn-outline btn-block fingerprint-btn" style="display:none" onclick="handleFingerprintSignup()">
                 <span class="fp-icon">👆</span> Sign Up with Fingerprint
             </button>
+            <button id="androidFpSignupBtn" class="btn btn-outline btn-block fingerprint-btn" style="display:none" onclick="handleAndroidFingerprintSignup()">
+                <span class="fp-icon">👆</span> Sign Up with Fingerprint
+            </button>
             <p class="auth-footer">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
         </div>
     </div>
@@ -41,10 +44,20 @@
 <script src="{% static 'js/webauthn.js' %}"></script>
 <script>
 (function() {
-    if (!isMobile() || !supportsWebAuthn()) return;
-    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(available) {
-        if (available) document.getElementById('fpSignupBtn').style.display = 'block';
-    });
+    {% comment %} WebAuthn fingerprint for browser {% endcomment %}
+    if (typeof Android === 'undefined' || !Android.getPlatform || Android.getPlatform() !== 'android') {
+        if (isMobile() && supportsWebAuthn()) {
+            PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(available) {
+                if (available) document.getElementById('fpSignupBtn').style.display = 'block';
+            });
+        }
+    }
+    {% comment %} Android native fingerprint for APK {% endcomment %}
+    if (typeof Android !== 'undefined' && Android.getPlatform && Android.getPlatform() === 'android') {
+        if (Android.isFingerprintAvailable && Android.isFingerprintAvailable()) {
+            document.getElementById('androidFpSignupBtn').style.display = 'block';
+        }
+    }
 })();
 function handleFingerprintSignup() {
     var btn = document.getElementById('fpSignupBtn');
@@ -56,6 +69,43 @@ function handleFingerprintSignup() {
         alert('Fingerprint signup failed: ' + err.message);
         btn.disabled = false;
         btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
+    });
+}
+function handleAndroidFingerprintSignup() {
+    var btn = document.getElementById('androidFpSignupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Scanning fingerprint...';
+    Android.authenticateFingerprint('signup', function(success, token) {
+        if (!success) {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
+            return;
+        }
+        var deviceToken = token;
+        if (!deviceToken) {
+            alert('Fingerprint scan failed. Try again.');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
+            return;
+        }
+        localStorage.setItem('android_fp_token', deviceToken);
+        fetch('/api/fingerprint/android/signup/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+            body: JSON.stringify({device_token: deviceToken})
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            if (data.status === 'ok') {
+                window.location.href = '/profile/';
+            } else {
+                alert(data.message || 'Signup failed');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
+            }
+        }).catch(function() {
+            alert('Network error');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
+        });
     });
 }
 </script>

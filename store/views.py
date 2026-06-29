@@ -1,3 +1,4 @@
+import hashlib
 import json
 import logging
 import uuid
@@ -40,6 +41,7 @@ from store.forms import (
     WebsiteSettingsForm,
 )
 from store.models import (
+    AndroidFingerprintDevice,
     App,
     AppVersion,
     ApiToken,
@@ -487,6 +489,87 @@ def attach_email_password(request):
             return redirect('profile')
 
     return render(request, 'attach_email.html', {'user': user})
+
+
+# ── Android Fingerprint API ────────────────────────────────────────────────────
+
+@csrf_exempt
+def android_fingerprint_signup(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    device_token = data.get('device_token')
+    if not device_token:
+        return JsonResponse({'status': 'error', 'message': 'Missing device_token'}, status=400)
+    hashed = hashlib.sha256(device_token.encode()).hexdigest()
+    if AndroidFingerprintDevice.objects.filter(device_id=hashed).exists():
+        device = AndroidFingerprintDevice.objects.get(device_id=hashed)
+        if device.user:
+            login(request, device.user)
+            return JsonResponse({'status': 'ok', 'username': device.user.username})
+        return JsonResponse({'status': 'error', 'message': 'Already registered'}, status=400)
+    username = 'fp_' + uuid.uuid4().hex[:12]
+    user = User.objects.create_user(username=username, is_fingerprint_user=True)
+    AndroidFingerprintDevice.objects.create(user=user, device_id=hashed)
+    login(request, user)
+    return JsonResponse({'status': 'ok', 'username': username, 'is_new': True})
+
+
+@csrf_exempt
+def android_fingerprint_login(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    device_token = data.get('device_token')
+    if not device_token:
+        return JsonResponse({'status': 'error', 'message': 'Missing device_token'}, status=400)
+    hashed = hashlib.sha256(device_token.encode()).hexdigest()
+    try:
+        device = AndroidFingerprintDevice.objects.get(device_id=hashed)
+    except AndroidFingerprintDevice.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'No fingerprint registered'}, status=404)
+    if not device.user:
+        return JsonResponse({'status': 'error', 'message': 'No user linked'}, status=404)
+    login(request, device.user)
+    return JsonResponse({'status': 'ok', 'username': device.user.username})
+
+
+@login_required
+@csrf_exempt
+def android_fingerprint_register(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    device_token = data.get('device_token')
+    if not device_token:
+        return JsonResponse({'status': 'error', 'message': 'Missing device_token'}, status=400)
+    hashed = hashlib.sha256(device_token.encode()).hexdigest()
+    if AndroidFingerprintDevice.objects.filter(device_id=hashed).exists():
+        return JsonResponse({'status': 'error', 'message': 'Already registered'}, status=400)
+    request.user.is_fingerprint_user = True
+    request.user.save(update_fields=['is_fingerprint_user'])
+    AndroidFingerprintDevice.objects.create(user=request.user, device_id=hashed)
+    return JsonResponse({'status': 'ok'})
+
+
+def android_fingerprint_status(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'has_fingerprint': False})
+    has_device = AndroidFingerprintDevice.objects.filter(user=request.user).exists()
+    return JsonResponse({
+        'is_fingerprint_user': request.user.is_fingerprint_user,
+        'has_upgraded': request.user.has_upgraded,
+        'has_android_fingerprint': has_device,
+    })
 
 
 # ── Download (login required) ─────────────────────────────────────────────────

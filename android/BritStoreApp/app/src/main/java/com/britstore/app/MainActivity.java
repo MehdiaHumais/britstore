@@ -1,5 +1,6 @@
 package com.britstore.app;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -7,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(android.R.color.black, android.R.color.darker_gray);
 
         webView.addJavascriptInterface(
-                new WebAppInterface(this, webView), "Android");
+                new WebAppInterface(this, this, webView), "Android");
 
         webView.loadUrl(STORE_URL);
     }
@@ -126,6 +128,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class StoreChromeClient extends WebChromeClient {
+        @Override
+        public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+            new AlertDialog.Builder(new android.view.ContextThemeWrapper(
+                    MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog_Alert))
+                    .setTitle("Confirm")
+                    .setMessage(message)
+                    .setPositiveButton("Yes",
+                            (dialog, which) -> result.confirm())
+                    .setNegativeButton("No",
+                            (dialog, which) -> result.cancel())
+                    .setOnCancelListener(dialog -> result.cancel())
+                    .show();
+            return true;
+        }
+
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+            new AlertDialog.Builder(new android.view.ContextThemeWrapper(
+                    MainActivity.this, android.R.style.Theme_DeviceDefault_Dialog_Alert))
+                    .setTitle("Alert")
+                    .setMessage(message)
+                    .setPositiveButton("OK",
+                            (dialog, which) -> result.confirm())
+                    .setOnCancelListener(dialog -> result.cancel())
+                    .show();
+            return true;
+        }
+
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> filePath,
                                           FileChooserParams params) {

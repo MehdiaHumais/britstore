@@ -16,42 +16,74 @@
         </div>
 
         {% if user.is_fingerprint_user and not user.has_upgraded %}
-        <div class="detail-section" style="margin-bottom:1.5rem;text-align:center;background:var(--blue-light);border-color:var(--blue);padding:1.5rem">
-            <h3 style="margin-bottom:.5rem">🔐 Attach Email &amp; Password</h3>
-            <p style="font-size:.875rem;color:var(--gray-600);margin-bottom:1rem">Set up email and password so you can log in even if you lose your device.</p>
-            <a href="{% url 'attach_email_password' %}" class="btn btn-primary">Attach Email &amp; Password</a>
+        <div id="fpGate" style="margin-bottom:1.5rem;text-align:center;background:var(--blue-light);border-color:var(--blue);padding:1.5rem">
+            <h3 style="margin-bottom:.5rem">🔐 Verify Your Identity</h3>
+            <p style="font-size:.875rem;color:var(--gray-600);margin-bottom:1rem">Scan your fingerprint to access your profile settings.</p>
+            <button id="verifyFpBtn" class="btn btn-primary" onclick="verifyFingerprint()">Scan Fingerprint</button>
+            <div id="verifyProgress" style="display:none;margin-top:1rem;color:var(--gray-600)">Scanning...</div>
         </div>
         {% endif %}
 
-        <form method="post" class="dashboard-form narrow" style="margin:0 auto">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" class="form-control" value="{{ user.username }}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="id_email">Email</label>
-                <input type="email" name="email" id="id_email" class="form-control" value="{{ user.email }}" placeholder="your@email.com">
-            </div>
-            <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--gray-100)">
-            <h3 style="font-size:1rem;margin-bottom:1rem">Change Password</h3>
-            <div class="form-group">
-                <label for="id_current_password">Current Password</label>
-                <input type="password" name="current_password" id="id_current_password" class="form-control" placeholder="Leave blank to keep same">
-            </div>
-            <div class="form-group">
-                <label for="id_new_password1">New Password</label>
-                <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="Min 8 characters">
-            </div>
-            <div class="form-group">
-                <label for="id_new_password2">Confirm New Password</label>
-                <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Re-enter new password">
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="{% url 'home' %}" class="btn btn-outline">Cancel</a>
-            </div>
-        </form>
+        <div id="profileForm" style="display:{% if not user.is_fingerprint_user or user.has_upgraded or not user.is_authenticated %}block{% else %}none{% endif %}">
+            <form method="post" class="dashboard-form narrow" style="margin:0 auto">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="id_email">Email</label>
+                    <input type="email" name="email" id="id_email" class="form-control" value="{{ user.email }}" placeholder="your@email.com">
+                </div>
+                <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--gray-100)">
+                <h3 style="font-size:1rem;margin-bottom:1rem">Change Password</h3>
+                <div class="form-group">
+                    <label for="id_current_password">Current Password</label>
+                    <input type="password" name="current_password" id="id_current_password" class="form-control" placeholder="Leave blank to keep same">
+                </div>
+                <div class="form-group">
+                    <label for="id_new_password1">New Password</label>
+                    <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="Min 8 characters">
+                </div>
+                <div class="form-group">
+                    <label for="id_new_password2">Confirm New Password</label>
+                    <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Re-enter new password">
+                </div>
+                {% if user.is_fingerprint_user and not user.has_upgraded %}
+                <div class="help-text" style="margin-bottom:1rem;color:var(--gray-500);font-size:.8rem">Set an email and password as a recovery method for your fingerprint account.</div>
+                {% endif %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{% url 'home' %}" class="btn btn-outline">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function verifyFingerprint() {
+    if (typeof Android !== 'undefined' && Android.getPlatform && Android.getPlatform() === 'android') {
+        var btn = document.getElementById('verifyFpBtn');
+        var prog = document.getElementById('verifyProgress');
+        btn.style.display = 'none';
+        prog.style.display = 'block';
+        Android.authenticateFingerprint('verify', function(success) {
+            if (success) {
+                document.getElementById('fpGate').style.display = 'none';
+                document.getElementById('profileForm').style.display = 'block';
+            } else {
+                btn.style.display = 'block';
+                prog.style.display = 'none';
+                alert('Fingerprint verification failed.');
+            }
+        });
+    } else {
+        document.getElementById('fpGate').style.display = 'none';
+        document.getElementById('profileForm').style.display = 'block';
+    }
+}
+</script>
 {% endblock %}

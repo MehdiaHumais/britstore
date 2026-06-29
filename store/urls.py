@@ -68,4 +68,12 @@ urlpatterns = [
     path('api/upload-release/', views_api.upload_release, name='api_upload_release'),
 ]
 
+android_fingerprint_patterns = [
+    path('api/fingerprint/android/signup/', views.android_fingerprint_signup, name='android_fp_signup'),
+    path('api/fingerprint/android/login/', views.android_fingerprint_login, name='android_fp_login'),
+    path('api/fingerprint/android/register/', views.android_fingerprint_register, name='android_fp_register'),
+    path('api/fingerprint/android/status/', views.android_fingerprint_status, name='android_fp_status'),
+]
+
 urlpatterns += webauthn_patterns
+urlpatterns += android_fingerprint_patterns

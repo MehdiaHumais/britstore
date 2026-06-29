@@ -439,3 +439,20 @@ class FingerprintCredential(models.Model):
 
     def __str__(self):
         return f'Fingerprint credential for {self.user.username}'
+
+
+class AndroidFingerprintDevice(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE,
+        related_name='android_fingerprint',
+        null=True, blank=True,
+    )
+    device_id = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Android fingerprint device for {self.user.username if self.user else "unassigned"}'

@@ -841,7 +841,8 @@ a:hover { color: var(--black); }
     .logo { font-size: .95rem; }
     .logo img { height: 24px !important; }
     .auth-card { padding: 1.25rem; }
-    .notif-dropdown { width: calc(100vw - 20px); right: -60px; }
+    .notif-dropdown { width: calc(100vw - 20px); right: auto; left: -10px; }
+    .search-inline-wrap.open .search-inline-form { width: calc(100vw - 90px); right: auto; left: -80px; }
     .container { padding: 0 .85rem; }
     .section { padding: 1rem 0; }
     .section-header h2 { font-size: 1rem; }

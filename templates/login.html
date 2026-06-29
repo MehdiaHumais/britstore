@@ -30,6 +30,9 @@
             <button id="fpLoginBtn" class="btn btn-outline btn-block fingerprint-btn" style="display:none" onclick="handleFingerprintLogin()">
                 <span class="fp-icon">👆</span> Sign In with Fingerprint
             </button>
+            <button id="androidFpLoginBtn" class="btn btn-outline btn-block fingerprint-btn" style="display:none" onclick="handleAndroidFingerprintLogin()">
+                <span class="fp-icon">👆</span> Sign In with Fingerprint
+            </button>
             <p class="auth-footer"><a href="{% url 'signup' %}">Create an account</a> &middot; <a href="{% url 'home' %}">Back to store</a></p>
         </div>
     </div>
@@ -40,12 +43,25 @@
 <script src="{% static 'js/webauthn.js' %}"></script>
 <script>
 (function() {
-    if (!isMobile() || !supportsWebAuthn()) return;
-    var credId = localStorage.getItem('fp_credential_id');
-    if (!credId) return;
-    PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(available) {
-        if (available) document.getElementById('fpLoginBtn').style.display = 'block';
-    });
+    {% comment %} WebAuthn fingerprint for browser {% endcomment %}
+    if (typeof Android === 'undefined' || !Android.getPlatform || Android.getPlatform() !== 'android') {
+        if (isMobile() && supportsWebAuthn()) {
+            var credId = localStorage.getItem('fp_credential_id');
+            if (credId) {
+                PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(available) {
+                    if (available) document.getElementById('fpLoginBtn').style.display = 'block';
+                });
+            }
+        }
+    }
+    {% comment %} Android native fingerprint for APK {% endcomment %}
+    if (typeof Android !== 'undefined' && Android.getPlatform && Android.getPlatform() === 'android') {
+        var androidBtn = document.getElementById('androidFpLoginBtn');
+        if (Android.isFingerprintAvailable && Android.isFingerprintAvailable()) {
+            var token = localStorage.getItem('android_fp_token');
+            if (token) androidBtn.style.display = 'block';
+        }
+    }
 })();
 function handleFingerprintLogin() {
     var btn = document.getElementById('fpLoginBtn');
@@ -59,6 +75,42 @@ function handleFingerprintLogin() {
         alert('Fingerprint login failed: ' + err.message);
         btn.disabled = false;
         btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
+    });
+}
+function handleAndroidFingerprintLogin() {
+    var btn = document.getElementById('androidFpLoginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Scanning fingerprint...';
+    Android.authenticateFingerprint('login', function(success, token) {
+        if (!success) {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
+            return;
+        }
+        var deviceToken = token || localStorage.getItem('android_fp_token');
+        if (!deviceToken) {
+            alert('No fingerprint registered. Please sign up first.');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
+            return;
+        }
+        fetch('/api/fingerprint/android/login/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+            body: JSON.stringify({device_token: deviceToken})
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            if (data.status === 'ok') {
+                window.location.href = '/';
+            } else {
+                alert(data.message || 'Login failed');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
+            }
+        }).catch(function() {
+            alert('Network error');
+            btn.disabled = false;
+            btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
+        });
     });
 }
 </script>

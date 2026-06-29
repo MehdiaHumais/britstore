@@ -327,8 +327,10 @@ function androidOpen() {
     Android.openApp('{{ app.package_name }}');
 }
 function androidUninstall() {
+    var pkg = '{{ app.package_name }}';
+    if (!pkg) { alert('No package name for this app'); return; }
     if (confirm('Uninstall {{ app.name }}?')) {
-        Android.uninstallApp('{{ app.package_name }}');
+        Android.uninstallApp(pkg);
     }
 }
 function androidCancel() {

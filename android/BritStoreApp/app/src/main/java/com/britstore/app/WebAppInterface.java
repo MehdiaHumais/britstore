@@ -3,16 +3,22 @@ package com.britstore.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,12 +26,20 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyStore;
+import java.util.UUID;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
 public class WebAppInterface {
 
+    private FragmentActivity activity;
     private Context context;
     private WebView webView;
     private Handler mainHandler;
@@ -33,7 +47,8 @@ public class WebAppInterface {
     private volatile DownloadTask currentDownload;
     private int lastProgress = -1;
 
-    public WebAppInterface(Context context, WebView webView) {
+    public WebAppInterface(FragmentActivity activity, Context context, WebView webView) {
+        this.activity = activity;
         this.context = context;
         this.webView = webView;
         this.mainHandler = new Handler(Looper.getMainLooper());
@@ -104,6 +119,61 @@ public class WebAppInterface {
             Toast.makeText(context, "Could not uninstall", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @JavascriptInterface
+    public boolean isFingerprintAvailable() {
+        BiometricManager bm = BiometricManager.from(context);
+        return bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                == BiometricManager.BIOMETRIC_SUCCESS;
+    }
+
+    @JavascriptInterface
+    public void authenticateFingerprint(final String mode) {
+        SharedPreferences prefs = context.getSharedPreferences("fp", Context.MODE_PRIVATE);
+        final String storedToken = prefs.getString("device_token", null);
+
+        mainHandler.post(() -> {
+            BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Fingerprint Authentication")
+                    .setSubtitle("Scan your fingerprint to continue")
+                    .setNegativeButtonText("Cancel")
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                    .build();
+
+            BiometricPrompt.AuthenticationCallback callback = new BiometricPrompt.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                    SharedPreferences prefs2 = context.getSharedPreferences("fp", Context.MODE_PRIVATE);
+                    String token = prefs2.getString("device_token", null);
+                    if (token == null) {
+                        token = UUID.randomUUID().toString();
+                        prefs2.edit().putString("device_token", token).apply();
+                    }
+                    final String finalToken = token;
+                    webView.post(() -> webView.evaluateJavascript(
+                        "if(window.onFingerprintResult) onFingerprintResult(true,'" + finalToken + "');", null));
+                }
+
+                @Override
+                public void onAuthenticationError(int errorCode, CharSequence errString) {
+                    webView.post(() -> webView.evaluateJavascript(
+                        "if(window.onFingerprintResult) onFingerprintResult(false,'');", null));
+                }
+
+                @Override
+                public void onAuthenticationFailed() {
+                    webView.post(() -> webView.evaluateJavascript(
+                        "if(window.onFingerprintResult) onFingerprintResult(false,'');", null));
+                }
+            };
+
+            Executor executor = context.getMainExecutor();
+            BiometricPrompt prompt = new BiometricPrompt(activity, executor, callback);
+            prompt.authenticate(promptInfo);
+        });
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────
 
     private void notifyProgress(int pct) {
         if (pct == lastProgress) return;
