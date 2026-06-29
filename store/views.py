@@ -494,6 +494,7 @@ def attach_email_password(request):
 # ── Android Fingerprint API ────────────────────────────────────────────────────
 
 @csrf_exempt
+@csrf_exempt
 def android_fingerprint_signup(request):
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)

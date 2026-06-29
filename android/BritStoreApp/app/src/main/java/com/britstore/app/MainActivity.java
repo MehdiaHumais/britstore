@@ -124,6 +124,27 @@ public class MainActivity extends AppCompatActivity {
             super.onPageFinished(view, url);
             swipeRefresh.setRefreshing(false);
             loadingOverlay.setVisibility(View.GONE);
+
+            view.evaluateJavascript(
+                "(function(){" +
+                "try{" +
+                "if(!window.Android||!Android.getPlatform||Android.getPlatform()!=='android')return;" +
+                "var path=window.location.pathname;" +
+                "var g=function(id){var e=document.getElementById(id);if(!e){e=document.createElement('button');e.id=id;e.className='btn btn-outline btn-block fingerprint-btn';var d=document.querySelector('.auth-divider');if(d)d.parentNode.insertBefore(e,d.nextSibling);}return e;};" +
+                "if(path.indexOf('/login/')>=0){" +
+                "var b=g('androidFpLoginBtn');b.style.display='block';b.innerHTML='<span class=\"fp-icon\">👆</span> Sign In with Fingerprint';" +
+                "b.onclick=function(){b.disabled=true;b.textContent='Scanning fingerprint...';window.onFingerprintResult=function(s,t){if(!s){b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign In with Fingerprint';return;}var token=t||localStorage.getItem('android_fp_token');if(!token){alert('No fingerprint registered.');b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign In with Fingerprint';return;}fetch('/api/fingerprint/android/login/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':document.querySelector('[name=csrfmiddlewaretoken]')?document.querySelector('[name=csrfmiddlewaretoken]').value:''},body:JSON.stringify({device_token:token})}).then(function(r){return r.json();}).then(function(d){if(d.status==='ok'){window.location.href='/';}else{alert(d.message||'Login failed');b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign In with Fingerprint';}}).catch(function(){alert('Network error');b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign In with Fingerprint';});};Android.authenticateFingerprint('login');};" +
+                "}" +
+                "if(path.indexOf('/signup/')>=0){" +
+                "var b=g('androidFpSignupBtn');b.style.display='block';b.innerHTML='<span class=\"fp-icon\">👆</span> Sign Up with Fingerprint';" +
+                "b.onclick=function(){b.disabled=true;b.textContent='Scanning fingerprint...';window.onFingerprintResult=function(s,t){if(!s){b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign Up with Fingerprint';return;}if(!t){alert('Scan failed');b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign Up with Fingerprint';return;}localStorage.setItem('android_fp_token',t);fetch('/api/fingerprint/android/signup/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':document.querySelector('[name=csrfmiddlewaretoken]')?document.querySelector('[name=csrfmiddlewaretoken]').value:''},body:JSON.stringify({device_token:t})}).then(function(r){return r.json();}).then(function(d){if(d.status==='ok'){window.location.href='/profile/';}else{alert(d.message||'Signup failed');b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign Up with Fingerprint';}}).catch(function(){alert('Network error');b.disabled=false;b.innerHTML='<span class=\"fp-icon\">👆</span> Sign Up with Fingerprint';});};Android.authenticateFingerprint('signup');};" +
+                "}" +
+                "if(path.indexOf('/profile/')>=0){" +
+                "var b=document.getElementById('verifyFpBtn');if(b&&!b._fp){b._fp=true;var ob=b.onclick;b.onclick=function(){if(typeof Android!=='undefined'&&Android.getPlatform&&Android.getPlatform()==='android'){var btn=document.getElementById('verifyFpBtn');var prog=document.getElementById('verifyProgress');if(btn)btn.style.display='none';if(prog)prog.style.display='block';window.onFingerprintResult=function(s){if(s){var g=document.getElementById('fpGate');var f=document.getElementById('profileForm');if(g)g.style.display='none';if(f)f.style.display='block';}else{if(btn)btn.style.display='block';if(prog)prog.style.display='none';alert('Verification failed');}};Android.authenticateFingerprint('verify');}else{var g=document.getElementById('fpGate');var f=document.getElementById('profileForm');if(g)g.style.display='none';if(f)f.style.display='block';}};}" +
+                "}" +
+                "}catch(e){console.error('BritStore FP:',e);}" +
+                "})()",
+                null);
         }
     }
 
