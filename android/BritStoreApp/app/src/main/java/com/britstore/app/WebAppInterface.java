@@ -112,11 +112,11 @@ public class WebAppInterface {
     public void uninstallApp(String packageName) {
         try {
             Uri uri = Uri.parse("package:" + packageName);
-            Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(context, "Could not uninstall", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Could not open app settings", Toast.LENGTH_SHORT).show();
         }
     }
 
