@@ -81,14 +81,14 @@ function handleAndroidFingerprintLogin() {
     var btn = document.getElementById('androidFpLoginBtn');
     btn.disabled = true;
     btn.textContent = 'Scanning fingerprint...';
-    Android.authenticateFingerprint('login', function(success, token) {
+    window.onFingerprintResult = function(success, deviceToken) {
         if (!success) {
             btn.disabled = false;
             btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
             return;
         }
-        var deviceToken = token || localStorage.getItem('android_fp_token');
-        if (!deviceToken) {
+        var token = deviceToken || localStorage.getItem('android_fp_token');
+        if (!token) {
             alert('No fingerprint registered. Please sign up first.');
             btn.disabled = false;
             btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
@@ -97,7 +97,7 @@ function handleAndroidFingerprintLogin() {
         fetch('/api/fingerprint/android/login/', {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
-            body: JSON.stringify({device_token: deviceToken})
+            body: JSON.stringify({device_token: token})
         }).then(function(r) { return r.json(); }).then(function(data) {
             if (data.status === 'ok') {
                 window.location.href = '/';
@@ -111,7 +111,8 @@ function handleAndroidFingerprintLogin() {
             btn.disabled = false;
             btn.innerHTML = '<span class="fp-icon">👆</span> Sign In with Fingerprint';
         });
-    });
+    };
+    Android.authenticateFingerprint('login');
 }
 </script>
 {% endblock %}

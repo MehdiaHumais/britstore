@@ -122,9 +122,16 @@ public class WebAppInterface {
 
     @JavascriptInterface
     public boolean isFingerprintAvailable() {
+        PackageManager pm = context.getPackageManager();
+        if (pm.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (pm.hasSystemFeature(PackageManager.FEATURE_FACE)) return true;
+            if (pm.hasSystemFeature(PackageManager.FEATURE_IRIS)) return true;
+        }
         BiometricManager bm = BiometricManager.from(context);
-        return bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                == BiometricManager.BIOMETRIC_SUCCESS;
+        int result = bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG);
+        return result == BiometricManager.BIOMETRIC_SUCCESS
+            || result == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED;
     }
 
     @JavascriptInterface

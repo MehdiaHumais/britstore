@@ -70,7 +70,7 @@ function verifyFingerprint() {
         var prog = document.getElementById('verifyProgress');
         btn.style.display = 'none';
         prog.style.display = 'block';
-        Android.authenticateFingerprint('verify', function(success) {
+        window.onFingerprintResult = function(success) {
             if (success) {
                 document.getElementById('fpGate').style.display = 'none';
                 document.getElementById('profileForm').style.display = 'block';
@@ -79,7 +79,8 @@ function verifyFingerprint() {
                 prog.style.display = 'none';
                 alert('Fingerprint verification failed.');
             }
-        });
+        };
+        Android.authenticateFingerprint('verify');
     } else {
         document.getElementById('fpGate').style.display = 'none';
         document.getElementById('profileForm').style.display = 'block';

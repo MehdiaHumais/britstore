@@ -75,13 +75,12 @@ function handleAndroidFingerprintSignup() {
     var btn = document.getElementById('androidFpSignupBtn');
     btn.disabled = true;
     btn.textContent = 'Scanning fingerprint...';
-    Android.authenticateFingerprint('signup', function(success, token) {
+    window.onFingerprintResult = function(success, deviceToken) {
         if (!success) {
             btn.disabled = false;
             btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
             return;
         }
-        var deviceToken = token;
         if (!deviceToken) {
             alert('Fingerprint scan failed. Try again.');
             btn.disabled = false;
@@ -106,7 +105,8 @@ function handleAndroidFingerprintSignup() {
             btn.disabled = false;
             btn.innerHTML = '<span class="fp-icon">👆</span> Sign Up with Fingerprint';
         });
-    });
+    };
+    Android.authenticateFingerprint('signup');
 }
 </script>
 {% endblock %}
