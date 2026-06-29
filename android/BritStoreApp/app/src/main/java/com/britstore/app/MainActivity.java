@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private View loadingOverlay;
     private ValueCallback<Uri[]> uploadMessage;
     private static final int FILE_CHOOSER_CODE = 1;
-    private static final String STORE_URL = "https://store.ascentraconsulting.co.uk";
+    private static final String STORE_URL = "https://store.britsyncai.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
