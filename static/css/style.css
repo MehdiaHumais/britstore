@@ -147,6 +147,7 @@ a:hover { color: var(--black); }
     padding: 0 .5rem 0 1rem;
     border: 1px solid var(--border);
     width: 240px;
+    max-width: calc(100vw - 20px);
     animation: slideIn .15s ease;
 }
 
@@ -219,6 +220,7 @@ a:hover { color: var(--black); }
     top: 100%;
     right: 0;
     width: 320px;
+    max-width: calc(100vw - 20px);
     max-height: 400px;
     overflow-y: auto;
     background: var(--white);
@@ -825,8 +827,6 @@ a:hover { color: var(--black); }
     .stats-grid { grid-template-columns: repeat(2,1fr); }
     .header-actions .btn { font-size: .75rem; padding: .25rem .6rem; }
     .header-actions { gap: .3rem; }
-    .notif-dropdown { position: fixed; top: 56px; right: 10px; left: 10px; width: auto; }
-    .search-inline-wrap.open .search-inline-form { position: fixed; top: 56px; left: 10px; right: 10px; width: auto; transform: none; }
 }
 
 @media (max-width: 480px) {
