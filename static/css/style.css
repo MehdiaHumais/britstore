@@ -857,3 +857,18 @@ a:hover { color: var(--black); }
     .app-detail-meta { gap: .4rem 1rem; font-size: .75rem; }
     .rating-stars-display .star { font-size: 1rem; }
 }
+
+/* Reviews */
+.reviews-list { display:flex; flex-direction:column; gap:.75rem; }
+.review-item {
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:.85rem 1rem;
+}
+.review-avatar {
+    display:inline-flex;align-items:center;justify-content:center;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--gray-900);color:#fff;
+    font-size:.65rem;font-weight:700;flex-shrink:0;
+}

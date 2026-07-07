@@ -118,10 +118,13 @@ class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
     app = models.ForeignKey('App', on_delete=models.CASCADE, related_name='ratings')
     score = models.PositiveSmallIntegerField(choices=[(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5')])
+    comment = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ['user', 'app']
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.user.username} rated {self.app.name} {self.score}/5'

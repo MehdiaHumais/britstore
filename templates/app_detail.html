@@ -109,6 +109,61 @@
                 <h2>About this app</h2>
                 <div class="prose">{{ app.full_description|linebreaks }}</div>
             </div>
+
+            <div class="detail-section" id="reviewsSection">
+                <h2>Ratings & Reviews</h2>
+                <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+                    <div style="font-size:2.5rem;font-weight:700">{{ app.avg_rating|floatformat:1 }}</div>
+                    <div>
+                        <div class="stars" style="font-size:1.1rem">
+                            {% for i in "12345"|make_list %}
+                            <span class="star {% if forloop.counter <= app.avg_rating_int %}filled{% else %}empty{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                        <div style="font-size:.8rem;color:var(--gray-500)">{{ app.rating_count }} review{{ app.rating_count|pluralize }}</div>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                <div style="background:var(--bg);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.25rem">
+                    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+                        <span style="font-weight:600;font-size:.875rem">Your Rating</span>
+                        <div class="rating-stars-display" id="reviewStars" style="display:inline-flex">
+                            {% for i in "12345"|make_list %}
+                            <span class="star {% if user_rating and forloop.counter <= user_rating.score %}filled{% else %}empty{% endif %}" data-score="{{ forloop.counter }}" style="font-size:1.3rem;cursor:pointer">★</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <textarea id="reviewComment" class="form-control" placeholder="Write a review..." style="resize:vertical;min-height:60px;margin-bottom:.5rem">{% if user_rating and user_rating.comment %}{{ user_rating.comment }}{% endif %}</textarea>
+                    <button class="btn btn-primary btn-sm" onclick="submitReview({{ app.id }})">Submit</button>
+                </div>
+                {% else %}
+                <p style="font-size:.85rem;color:var(--gray-500);margin-bottom:1rem"><a href="{% url 'login' %}?next={% url 'app_detail' app.slug %}">Sign in</a> to rate and review this app.</p>
+                {% endif %}
+
+                <div class="reviews-list">
+                    {% for r in reviews %}
+                    <div class="review-item">
+                        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem">
+                            <span class="review-avatar">{{ r.user.avatar_letter }}</span>
+                            <span style="font-weight:600;font-size:.85rem">{{ r.user.username }}</span>
+                            <div class="stars" style="font-size:.75rem">
+                                {% for i in "12345"|make_list %}
+                                <span class="star {% if forloop.counter <= r.score %}filled{% else %}empty{% endif %}">★</span>
+                                {% endfor %}
+                            </div>
+                            <span style="font-size:.7rem;color:var(--gray-400);margin-left:auto">{{ r.created_at|timesince }} ago</span>
+                        </div>
+                        {% if r.comment %}
+                        <p style="font-size:.85rem;color:var(--gray-700);line-height:1.5">{{ r.comment }}</p>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <p style="font-size:.85rem;color:var(--gray-400);text-align:center;padding:1rem 0">No reviews yet. Be the first!</p>
+                    {% endfor %}
+                </div>
+            </div>
+
             {% if app.release_notes %}
             <div class="detail-section">
                 <h2>What's New</h2>
@@ -352,5 +407,46 @@ function rateApp(appId, score) {
         }
     });
 }
+
+function submitReview(appId) {
+    var score = 0;
+    document.querySelectorAll('#reviewStars .star').forEach(function(s) {
+        if (s.classList.contains('filled')) score = Math.max(score, parseInt(s.dataset.score));
+    });
+    if (score === 0) { alert('Tap a star to rate'); return; }
+    var comment = document.getElementById('reviewComment').value.trim();
+    var btn = document.querySelector('#reviewsSection .btn-primary');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    fetch('/rate/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: 'app_id=' + appId + '&score=' + score + '&comment=' + encodeURIComponent(comment)
+    }).then(function(r) { return r.json(); }).then(function(data) {
+        if (data.status === 'ok') {
+            location.reload();
+        } else {
+            alert('Failed to submit review');
+            btn.disabled = false;
+            btn.textContent = 'Submit';
+        }
+    }).catch(function() {
+        alert('Network error');
+        btn.disabled = false;
+        btn.textContent = 'Submit';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#reviewStars .star').forEach(function(s) {
+        s.addEventListener('click', function() {
+            var score = parseInt(this.dataset.score);
+            document.querySelectorAll('#reviewStars .star').forEach(function(st, i) {
+                st.classList.toggle('filled', i < score);
+                st.classList.toggle('empty', i >= score);
+            });
+        });
+    });
+});
 </script>
 {% endblock %}

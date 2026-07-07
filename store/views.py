@@ -117,6 +117,13 @@ def app_detail(request, slug):
     mobile_shots = [s for s in all_shots if s.type == Screenshot.TYPE_MOBILE]
     tablet_shots = [s for s in all_shots if s.type == Screenshot.TYPE_TABLET]
     similar_apps = _published_apps().filter(category=app.category).exclude(pk=app.pk)[:8]
+    reviews = app.ratings.select_related('user').all()[:20]
+    user_rating = None
+    if request.user.is_authenticated:
+        try:
+            user_rating = app.ratings.get(user=request.user)
+        except Rating.DoesNotExist:
+            pass
     return render(request, 'app_detail.html', {
         'app': app,
         'versions': versions,
@@ -124,6 +131,8 @@ def app_detail(request, slug):
         'mobile_screenshots': mobile_shots,
         'tablet_screenshots': tablet_shots,
         'similar_apps': similar_apps,
+        'reviews': reviews,
+        'user_rating': user_rating,
     })
 
 
@@ -999,6 +1008,7 @@ def rate_app(request):
         return JsonResponse({'error': 'POST required'}, status=405)
     app_id = request.POST.get('app_id')
     score = request.POST.get('score')
+    comment = request.POST.get('comment', '').strip()
     if not app_id or not score:
         return JsonResponse({'error': 'Missing app_id or score'}, status=400)
     try:
@@ -1011,7 +1021,7 @@ def rate_app(request):
     Rating.objects.update_or_create(
         user=request.user,
         app=app,
-        defaults={'score': score},
+        defaults={'score': score, 'comment': comment},
     )
     return JsonResponse({
         'status': 'ok',
