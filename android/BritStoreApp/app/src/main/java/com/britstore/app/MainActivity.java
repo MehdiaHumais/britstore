@@ -80,9 +80,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            webView.goBack();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (webView.canGoBack()) {
+                webView.goBack();
+                return true;
+            }
+            String currentUrl = webView.getUrl();
+            if (currentUrl != null && !currentUrl.equals(STORE_URL) && !currentUrl.equals(STORE_URL + "/")) {
+                webView.loadUrl(STORE_URL);
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
