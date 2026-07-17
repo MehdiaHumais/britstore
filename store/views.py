@@ -1002,6 +1002,27 @@ def toggle_publish(request, slug):
     return redirect('dashboard_apps')
 
 
+@super_admin_required
+def reset_downloads(request, slug):
+    app = get_object_or_404(App, slug=slug)
+    if request.method == 'POST':
+        count = app.download_count
+        app.download_count = 0
+        app.save(update_fields=['download_count'])
+        Download.objects.filter(app=app).delete()
+        messages.success(request, f'Downloads reset for "{app.name}" (was {count}).')
+    return redirect('dashboard_apps')
+
+
+@super_admin_required
+def reset_all_downloads(request):
+    if request.method == 'POST':
+        total = App.objects.update(download_count=0)
+        Download.objects.all().delete()
+        messages.success(request, f'All download counts reset to 0 ({total} apps affected).')
+    return redirect('dashboard_home')
+
+
 @login_required
 def rate_app(request):
     if request.method != 'POST':

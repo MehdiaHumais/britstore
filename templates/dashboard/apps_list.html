@@ -52,6 +52,10 @@
                             <a href="{% url 'dashboard_toggle_publish' app.slug %}" class="btn btn-outline btn-sm">
                                 {% if app.published %}Unpublish{% else %}Publish{% endif %}
                             </a>
+                            <form method="post" action="{% url 'dashboard_reset_downloads' app.slug %}" style="display:inline" onsubmit="return confirm('Reset download count for &quot;{{ app.name }}&quot;? This deletes all download records.')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline btn-sm">Reset DL</button>
+                            </form>
                             <form method="post" action="{% url 'dashboard_delete_app' app.slug %}" style="display:inline" onsubmit="return confirm('Delete &quot;{{ app.name }}&quot;? This cannot be undone.')">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>

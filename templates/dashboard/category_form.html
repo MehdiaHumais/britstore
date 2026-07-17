@@ -15,7 +15,14 @@
             {% for field in form %}
             <div class="form-group">
                 <label>{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>
+                {% if field.field.widget.input_type == 'file' %}
+                <div class="file-input-wrap">
+                    {{ field }}
+                    <span class="file-input-text">No file chosen</span>
+                </div>
+                {% else %}
                 {{ field }}
+                {% endif %}
                 {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
                 {% if is_edit and field.name == 'icon' and category.icon %}
                 <div class="form-preview">

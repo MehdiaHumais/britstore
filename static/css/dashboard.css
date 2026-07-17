@@ -195,7 +195,7 @@
     align-items: center;
     gap: .35rem;
 }
-.screenshot-manage-item img { width: 120px; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gray-100); }
+.screenshot-manage-item img { width: 80px; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gray-100); }
 
 .screenshot-type-badge {
     font-size: .65rem;
@@ -347,6 +347,11 @@
 .sidebar-toggle-btn:hover { transform: scale(1.05); }
 .sidebar-toggle-btn:active { transform: scale(.95); }
 
+@media (max-width: 1024px) {
+    .screenshot-manage-item img { width: 90px; height: 155px; }
+    .screenshot-previews img { width: 60px; height: 105px; }
+    .screenshot-previews .preview-count { width: 60px; height: 105px; }
+}
 @media (max-width: 768px) {
     .sidebar-overlay { display: none; }
     .sidebar-toggle-btn { display: flex; }
@@ -367,6 +372,9 @@
     .sidebar-close { display: block; }
     .sidebar-nav a { border-left: 3px solid transparent; }
     .dashboard-main { padding: 1.25rem; padding-bottom: 80px; }
+    .screenshot-manage-item img { width: 70px; height: 125px; }
+    .screenshot-previews img { width: 50px; height: 90px; }
+    .screenshot-previews .preview-count { width: 50px; height: 90px; }
 }
 
 /* ── Token modal uses inline styles in api_tokens.html ── */
@@ -419,15 +427,18 @@
 }
 
 /* Style Django form file fields (apk_file, icon) */
-.form-control[type="file"]:not(.file-input) {
+.form-control[type="file"]:not(.file-input),
+input[type="file"]:not(.file-input):not(.file-input-hidden) {
     padding: 0;
     border: none;
     background: transparent;
     font-size: .8rem;
     color: var(--gray-500);
     font-family: var(--font);
+    max-width: 100%;
 }
-.form-control[type="file"]:not(.file-input)::file-selector-button {
+.form-control[type="file"]:not(.file-input)::file-selector-button,
+input[type="file"]:not(.file-input):not(.file-input-hidden)::file-selector-button {
     display: inline-flex;
     align-items: center;
     gap: .4rem;
@@ -443,7 +454,8 @@
     margin-right: .75rem;
     transition: background .15s;
 }
-.form-control[type="file"]:not(.file-input)::file-selector-button:hover {
+.form-control[type="file"]:not(.file-input)::file-selector-button:hover,
+input[type="file"]:not(.file-input):not(.file-input-hidden)::file-selector-button:hover {
     background: var(--black);
 }
 
