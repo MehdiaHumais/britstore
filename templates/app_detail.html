@@ -373,6 +373,7 @@ function shareApp() {
         openBtn.style.display = installed ? '' : 'none';
         uninstallBtn.style.display = installed ? '' : 'none';
     }
+    window.updateInstallState = updateInstallState;
 })();
 
 function androidInstall() {
