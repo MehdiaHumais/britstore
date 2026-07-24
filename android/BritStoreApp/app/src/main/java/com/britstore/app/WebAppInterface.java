@@ -99,9 +99,24 @@ public class WebAppInterface {
     public void openApp(String packageName) {
         try {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+            if (intent == null) {
+                Intent mainIntent = new Intent(Intent.ACTION_MAIN);
+                mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                mainIntent.setPackage(packageName);
+                java.util.List<android.content.pm.ResolveInfo> list =
+                    context.getPackageManager().queryIntentActivities(mainIntent, 0);
+                if (list != null && !list.isEmpty()) {
+                    android.content.pm.ResolveInfo info = list.get(0);
+                    intent = new Intent();
+                    intent.setComponent(new android.content.ComponentName(
+                        info.activityInfo.packageName, info.activityInfo.name));
+                }
+            }
             if (intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "Could not find app", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Toast.makeText(context, "Could not open app", Toast.LENGTH_SHORT).show();
