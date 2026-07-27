@@ -247,6 +247,7 @@ def upload_release(request):
         app.file_size = version_obj.apk_file.size
     app.version = version
     app.release_notes = release_notes
+    app.apk_file = apk_file
     app.save()
 
     token.last_used = models.functions.Now()
