@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from store.forms import ApiUploadForm
-from store.models import ApiToken, App, AppVersion, Notification, UploadAuditLog
+from store.models import ApiToken, App, AppVersion, Category, Notification, Screenshot, UploadAuditLog
 from store.utils import get_client_ip
 
 logger = logging.getLogger(__name__)
@@ -114,6 +114,28 @@ def release_notes(request, package_name):
 
 
 @csrf_exempt
+@require_GET
+def check_package_api(request, package_name):
+    """
+    GET /api/check-package/<package_name>/
+    CI/CD endpoint. Returns whether the package exists (regardless of published status).
+    """
+    exists = App.objects.filter(package_name=package_name).exists()
+    if not exists:
+        return JsonResponse({'exists': False}, status=404)
+    app = App.objects.get(package_name=package_name)
+    latest = app.versions.order_by('-version_code').first()
+    return JsonResponse({
+        'exists': True,
+        'package_name': app.package_name,
+        'app_name': app.name,
+        'published': app.published,
+        'latest_version': latest.version if latest else None,
+        'latest_version_code': latest.version_code if latest else None,
+    })
+
+
+@csrf_exempt
 @require_POST
 def upload_release(request):
     """
@@ -160,12 +182,20 @@ def upload_release(request):
             'error': f'This token is restricted to package "{token.package_name}". Cannot upload for "{package_name}".',
         }, status=403)
 
+    # Ensure a default category exists for CI/CD uploads
+    default_category, _ = Category.objects.get_or_create(
+        name='Uncategorized',
+        defaults={'slug': 'uncategorized', 'description': 'Default category for CI/CD uploads'},
+    )
+
     app, created = App.objects.update_or_create(
         package_name=package_name,
         defaults={
             'name': cd.get('app_name', package_name),
             'version': version,
             'slug': package_name.replace('.', '-'),
+            'category': default_category,
+            'published': True,
         },
     )
     if created and cd.get('app_name'):
@@ -227,3 +257,98 @@ def upload_release(request):
         'force_update': force_update,
         'download_url': request.build_absolute_uri(f'/api/apps/{package_name}/download-latest/'),
     }, status=201)
+
+
+@csrf_exempt
+def update_app_media(request):
+    """
+    POST /api/update-app-media/
+    CI/CD endpoint. Authenticated via Bearer token.
+
+    Accepts multipart form data:
+      - package_name (required)
+      - icon (optional, image file)
+      - mobile_screenshots (optional, multiple image files)
+      - tablet_screenshots (optional, multiple image files)
+      - short_description (optional)
+      - full_description (optional)
+      - category (optional)
+    """
+    user, token = _auth_from_token(request)
+    if not user or not token:
+        return JsonResponse({'error': 'Unauthorized. Provide a valid Bearer token.'}, status=401)
+
+    package_name = request.POST.get('package_name', '').strip()
+    if not package_name:
+        return JsonResponse({'error': 'package_name is required.'}, status=400)
+
+    try:
+        app = App.objects.get(package_name=package_name)
+    except App.DoesNotExist:
+        return JsonResponse({'error': f'App {package_name} not found. Upload APK first.'}, status=404)
+
+    updated_fields = []
+
+    # Icon
+    icon = request.FILES.get('icon')
+    if icon:
+        from store.utils import validate_image_file
+        try:
+            validate_image_file(icon)
+        except Exception as e:
+            return JsonResponse({'error': f'Invalid icon: {e}'}, status=400)
+        app.icon = icon
+        updated_fields.append('icon')
+
+    # Description fields
+    short_desc = request.POST.get('short_description', '').strip()
+    if short_desc:
+        app.short_description = short_desc
+        updated_fields.append('short_description')
+
+    full_desc = request.POST.get('full_description', '').strip()
+    if full_desc:
+        app.full_description = full_desc
+        updated_fields.append('full_description')
+
+    if updated_fields:
+        app.save(update_fields=updated_fields)
+
+    # Mobile screenshots
+    mobile_files = request.FILES.getlist('mobile_screenshots')
+    tablet_files = request.FILES.getlist('tablet_screenshots')
+
+    screenshots_added = 0
+    next_order = (app.screenshots.aggregate(m=models.Max('display_order'))['m'] or 0) + 1
+
+    for f in mobile_files:
+        try:
+            from store.utils import validate_screenshot_file
+            validate_screenshot_file(f, 'mobile')
+        except Exception as e:
+            return JsonResponse({'error': f'Invalid mobile screenshot: {e}'}, status=400)
+        Screenshot.objects.create(
+            app=app, image=f, type=Screenshot.TYPE_MOBILE, display_order=next_order
+        )
+        screenshots_added += 1
+        next_order += 1
+
+    for f in tablet_files:
+        try:
+            from store.utils import validate_screenshot_file
+            validate_screenshot_file(f, 'tablet')
+        except Exception as e:
+            return JsonResponse({'error': f'Invalid tablet screenshot: {e}'}, status=400)
+        Screenshot.objects.create(
+            app=app, image=f, type=Screenshot.TYPE_TABLET, display_order=next_order
+        )
+        screenshots_added += 1
+        next_order += 1
+
+    return JsonResponse({
+        'success': True,
+        'package_name': package_name,
+        'icon_updated': bool(icon),
+        'screenshots_added': screenshots_added,
+        'message': f'App media updated. Icon: {"updated" if icon else "unchanged"}, Screenshots: {screenshots_added} added.',
+    }, status=200)

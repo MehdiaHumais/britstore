@@ -68,6 +68,8 @@ urlpatterns = [
     path('api/apps/<str:package_name>/download-latest/', views_api.download_latest, name='api_download_latest'),
     path('api/apps/<str:package_name>/release-notes/', views_api.release_notes, name='api_release_notes'),
     path('api/upload-release/', views_api.upload_release, name='api_upload_release'),
+    path('api/update-app-media/', views_api.update_app_media, name='api_update_app_media'),
+    path('api/check-package/<str:package_name>/', views_api.check_package_api, name='api_check_package'),
 ]
 
 android_fingerprint_patterns = [
