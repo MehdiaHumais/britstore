@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import models
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -176,27 +177,50 @@ def upload_release(request):
     release_notes = cd.get('release_notes', '') or ''
     force_update = bool(cd.get('force_update', False))
 
+    # CI/CD metadata fields
+    short_description = request.POST.get('short_description', '').strip()
+    full_description = request.POST.get('full_description', '').strip()
+    category_name = request.POST.get('category', '').strip()
+    price_type = request.POST.get('price_type', 'free').strip()
+    published = request.POST.get('published', 'true').lower() in ('true', '1', 'yes')
+    featured = request.POST.get('featured', 'false').lower() in ('true', '1', 'yes')
+
     # Enforce package-name scoping if token is restricted
     if token.package_name and token.package_name != package_name:
         return JsonResponse({
             'error': f'This token is restricted to package "{token.package_name}". Cannot upload for "{package_name}".',
         }, status=403)
 
-    # Ensure a default category exists for CI/CD uploads
-    default_category, _ = Category.objects.get_or_create(
-        name='Uncategorized',
-        defaults={'slug': 'uncategorized', 'description': 'Default category for CI/CD uploads'},
-    )
+    # Resolve category
+    if category_name:
+        category_obj, _ = Category.objects.get_or_create(
+            name=category_name,
+            defaults={'slug': slugify(category_name), 'description': f'{category_name} apps'},
+        )
+    else:
+        category_obj, _ = Category.objects.get_or_create(
+            name='Uncategorized',
+            defaults={'slug': 'uncategorized', 'description': 'Default category for CI/CD uploads'},
+        )
+
+    app_defaults = {
+        'name': cd.get('app_name', package_name),
+        'version': version,
+        'slug': package_name.replace('.', '-'),
+        'category': category_obj,
+        'published': published,
+        'featured': featured,
+        'price_type': price_type,
+        'uploaded_by': user,
+    }
+    if short_description:
+        app_defaults['short_description'] = short_description
+    if full_description:
+        app_defaults['full_description'] = full_description
 
     app, created = App.objects.update_or_create(
         package_name=package_name,
-        defaults={
-            'name': cd.get('app_name', package_name),
-            'version': version,
-            'slug': package_name.replace('.', '-'),
-            'category': default_category,
-            'published': True,
-        },
+        defaults=app_defaults,
     )
     if created and cd.get('app_name'):
         app.name = cd['app_name']
