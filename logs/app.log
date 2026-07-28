@@ -909,3 +909,488 @@ WARNING 2026-06-29 14:34:38,254 log Not Found: /.well-known/appspecific/com.chro
 WARNING 2026-06-29 14:36:10,589 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
 INFO 2026-06-29 16:15:18,459 autoreload Watching for file changes with StatReloader
 WARNING 2026-06-29 16:15:34,001 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-07-17 12:59:18,595 autoreload Watching for file changes with StatReloader
+INFO 2026-07-17 13:09:39,135 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-07-17 13:10:03,986 autoreload Watching for file changes with StatReloader
+INFO 2026-07-17 13:11:12,336 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-07-17 13:11:18,623 autoreload Watching for file changes with StatReloader
+INFO 2026-07-17 13:11:25,048 autoreload D:\sir projectss\company app store\store\urls.py changed, reloading.
+INFO 2026-07-17 13:11:28,040 autoreload Watching for file changes with StatReloader
+INFO 2026-07-24 11:01:56,704 autoreload Watching for file changes with StatReloader
+INFO 2026-07-24 11:02:16,739 autoreload Watching for file changes with StatReloader
+INFO 2026-07-24 11:04:31,622 autoreload Watching for file changes with StatReloader
+WARNING 2026-07-24 11:48:40,647 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-07-24 11:48:42,302 log Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-07-24 13:00:59,812 services Updating app brittrade to same version 0.1
+INFO 2026-07-24 13:00:59,813 services Upload validated: BrtiTrade.apk (4629161 bytes)
+INFO 2026-07-24 13:02:33,388 services Upload validated: SlideAgent.apk (3378768 bytes)
+INFO 2026-07-24 13:04:34,455 services Upload validated: Britledger.apk (7894394 bytes)
+INFO 2026-07-24 13:07:37,747 services Upload validated: britdocu.apk (4509903 bytes)
+INFO 2026-07-24 13:09:21,491 services Upload validated: transscriber.apk (5472589 bytes)
+INFO 2026-07-27 18:59:28,435 autoreload Watching for file changes with StatReloader
+WARNING 2026-07-27 19:00:24,231 log Unauthorized: /api/upload-release/
+INFO 2026-07-27 19:06:12,257 autoreload Watching for file changes with StatReloader
+WARNING 2026-07-27 19:14:00,051 log Not Found: /api/apps/com.test.deploy/check-update/
+INFO 2026-07-27 19:14:00,092 services Upload validated: test.apk (2048 bytes)
+ERROR 2026-07-27 19:14:00,744 log Internal Server Error: /api/upload-release/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 635, in get
+    raise self.model.DoesNotExist(
+store.models.App.DoesNotExist: App matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: NOT NULL constraint failed: store_app.category_id
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views_api.py", line 163, in upload_release
+    app, created = App.objects.update_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 990, in update_or_create
+    obj, created = self.select_for_update().get_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 955, in get_or_create
+    return self.create(**params), True
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 665, in create
+    obj.save(force_insert=True, using=self.db)
+  File "D:\sir projectss\company app store\store\models.py", line 205, in save
+    super().save(*args, **kwargs)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1873, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: NOT NULL constraint failed: store_app.category_id
+WARNING 2026-07-27 19:18:00,938 log Not Found: /api/apps/com.test.deploy/check-update/
+INFO 2026-07-27 19:18:00,961 services Upload validated: test.apk (2048 bytes)
+ERROR 2026-07-27 19:18:01,105 log Internal Server Error: /api/upload-release/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 635, in get
+    raise self.model.DoesNotExist(
+store.models.App.DoesNotExist: App matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: NOT NULL constraint failed: store_app.category_id
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views_api.py", line 163, in upload_release
+    app, created = App.objects.update_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 990, in update_or_create
+    obj, created = self.select_for_update().get_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 955, in get_or_create
+    return self.create(**params), True
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 665, in create
+    obj.save(force_insert=True, using=self.db)
+  File "D:\sir projectss\company app store\store\models.py", line 205, in save
+    super().save(*args, **kwargs)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1873, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: NOT NULL constraint failed: store_app.category_id
+WARNING 2026-07-27 19:18:18,610 log Not Found: /api/apps/test/check-update/
+INFO 2026-07-27 19:21:08,346 services Upload validated: test.apk (2048 bytes)
+ERROR 2026-07-27 19:21:08,479 log Internal Server Error: /api/upload-release/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 635, in get
+    raise self.model.DoesNotExist(
+store.models.App.DoesNotExist: App matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: NOT NULL constraint failed: store_app.category_id
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views_api.py", line 163, in upload_release
+    app, created = App.objects.update_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 990, in update_or_create
+    obj, created = self.select_for_update().get_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 955, in get_or_create
+    return self.create(**params), True
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 665, in create
+    obj.save(force_insert=True, using=self.db)
+  File "D:\sir projectss\company app store\store\models.py", line 205, in save
+    super().save(*args, **kwargs)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1873, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: NOT NULL constraint failed: store_app.category_id
+INFO 2026-07-27 19:23:10,860 services Upload validated: test.apk (2048 bytes)
+ERROR 2026-07-27 19:23:10,989 log Internal Server Error: /api/upload-release/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 635, in get
+    raise self.model.DoesNotExist(
+store.models.App.DoesNotExist: App matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: NOT NULL constraint failed: store_app.category_id
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views_api.py", line 163, in upload_release
+    app, created = App.objects.update_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 990, in update_or_create
+    obj, created = self.select_for_update().get_or_create(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 955, in get_or_create
+    return self.create(**params), True
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 665, in create
+    obj.save(force_insert=True, using=self.db)
+  File "D:\sir projectss\company app store\store\models.py", line 205, in save
+    super().save(*args, **kwargs)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\query.py", line 1873, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: NOT NULL constraint failed: store_app.category_id
+INFO 2026-07-27 19:24:37,778 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 19:24:39,747 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:25:25,034 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 19:25:26,862 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:26:42,294 autoreload D:\sir projectss\company app store\store\models.py changed, reloading.
+INFO 2026-07-27 19:26:44,120 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:35:06,140 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 19:35:08,212 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:36:05,148 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:36:25,313 services Upload validated: test.apk (2048 bytes)
+WARNING 2026-07-27 19:36:56,172 log Not Found: /api/apps/com.test.deploy/check-update/
+INFO 2026-07-27 19:36:56,186 services Upload validated: test.apk (2048 bytes)
+WARNING 2026-07-27 19:37:45,561 log Not Found: /api/apps/com.test.deploy/check-update/
+INFO 2026-07-27 19:38:27,642 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 19:38:30,741 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:39:06,193 autoreload Watching for file changes with StatReloader
+WARNING 2026-07-27 19:39:10,056 log Not Found: /api/apps/com.test.deploy/check-update/
+INFO 2026-07-27 19:40:16,707 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 19:40:18,584 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:40:45,656 autoreload D:\sir projectss\company app store\store\urls.py changed, reloading.
+INFO 2026-07-27 19:40:47,481 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 19:42:07,906 autoreload Watching for file changes with StatReloader
+WARNING 2026-07-27 19:42:17,749 log Not Found: /api/apps/com.test.deploy/check-update/
+WARNING 2026-07-27 19:44:42,496 log Not Found: /api/apps/com.test.deploy/check-update/
+INFO 2026-07-27 19:45:46,406 services Upload validated: test.apk (2048 bytes)
+WARNING 2026-07-27 19:50:19,365 log Not Found: /api/check-package/Teachnician.app/
+INFO 2026-07-27 19:50:19,460 services Upload validated: app-debug.apk (4153523 bytes)
+INFO 2026-07-27 19:52:29,277 services Upload validated: app-debug.apk (4153523 bytes)
+WARNING 2026-07-27 19:52:29,310 log Conflict: /api/upload-release/
+INFO 2026-07-27 19:52:43,557 services Upload validated: app-debug.apk (4153523 bytes)
+WARNING 2026-07-27 20:09:54,856 log Not Found: /api/check-package/com.test.newapp/
+INFO 2026-07-27 20:09:54,879 services Upload validated: test.apk (2048 bytes)
+WARNING 2026-07-27 20:50:44,596 log Not Found: /download/com-test-newapp/
+WARNING 2026-07-27 20:50:44,752 log Not Found: /favicon.ico
+WARNING 2026-07-27 20:51:49,129 log Not Found: /api/check-package/app.debug/
+INFO 2026-07-27 20:51:49,185 services Upload validated: app-debug.apk (4153523 bytes)
+INFO 2026-07-27 21:09:29,132 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 21:09:31,598 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 21:09:43,740 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 21:09:45,751 autoreload Watching for file changes with StatReloader
+INFO 2026-07-27 22:02:24,815 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-27 22:02:28,422 autoreload Watching for file changes with StatReloader
+INFO 2026-07-28 00:08:46,928 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-28 00:08:50,531 autoreload Watching for file changes with StatReloader
+INFO 2026-07-28 00:10:19,751 autoreload D:\sir projectss\company app store\store\views_api.py changed, reloading.
+INFO 2026-07-28 00:10:22,806 autoreload Watching for file changes with StatReloader
+INFO 2026-07-28 01:11:32,212 autoreload C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\cryptography\__init__.py changed, reloading.
+INFO 2026-07-28 01:11:35,949 autoreload Watching for file changes with StatReloader
+INFO 2026-07-28 21:48:04,089 autoreload Watching for file changes with StatReloader
+INFO 2026-07-28 23:53:43,277 autoreload Watching for file changes with StatReloader
+ERROR 2026-07-28 23:54:16,952 log Internal Server Error: /dashboard/apps/com-test-deploy/screenshots/add/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\permissions.py", line 16, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\permissions.py", line 57, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 779, in add_screenshot
+    next_order = (app.screenshots.aggregate(m=models.Max('display_order'))['m'] or 0) + 1
+                                              ^^^^^^
+NameError: name 'models' is not defined
+WARNING 2026-07-28 23:54:17,387 log Not Found: /favicon.ico
+ERROR 2026-07-28 23:54:29,333 log Internal Server Error: /dashboard/apps/aurascribe-pro/screenshots/add/
+Traceback (most recent call last):
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Digital\AppData\Local\Programs\Python\Python311\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\permissions.py", line 16, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\permissions.py", line 57, in wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\sir projectss\company app store\store\views.py", line 779, in add_screenshot
+    next_order = (app.screenshots.aggregate(m=models.Max('display_order'))['m'] or 0) + 1
+                                              ^^^^^^
+NameError: name 'models' is not defined
+INFO 2026-07-28 23:56:13,468 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-07-28 23:56:43,093 autoreload Watching for file changes with StatReloader
+INFO 2026-07-29 00:01:15,200 autoreload D:\sir projectss\company app store\store\views.py changed, reloading.
+INFO 2026-07-29 00:01:17,226 autoreload Watching for file changes with StatReloader
