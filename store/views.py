@@ -765,20 +765,40 @@ def delete_app(request, slug):
 @app_edit_required
 def add_screenshot(request, slug, app=None):
     if request.method == 'POST':
-        form = ScreenshotForm(request.POST, request.FILES)
-        if form.is_valid():
-            screenshot = form.save(commit=False)
-            screenshot.app = app
-            if not screenshot.display_order:
-                next_order = (app.screenshots.aggregate(m=models.Max('display_order'))['m'] or 0) + 1
-                screenshot.display_order = next_order
-            screenshot.save()
-            messages.success(request, 'Screenshot added.')
-            return redirect('dashboard_edit_app', slug=app.slug)
-    else:
-        next_order = (app.screenshots.aggregate(m=models.Max('display_order'))['m'] or 0) + 1
-        form = ScreenshotForm(initial={'display_order': next_order})
-    return render(request, 'dashboard/screenshot_form.html', {'form': form, 'app': app})
+        images = request.FILES.getlist('images')
+        screenshot_type = request.POST.get('type', 'mobile')
+        if not images:
+            messages.error(request, 'Please select at least one image to upload.')
+            return render(request, 'dashboard/screenshot_form.html', {'app': app})
+
+        next_order = (app.screenshots.aggregate(m=Max('display_order'))['m'] or 0) + 1
+        saved = 0
+        errors = []
+        from store.utils import validate_image_file, validate_screenshot_file
+        from django.core.exceptions import ValidationError
+        for image_file in images:
+            try:
+                validate_screenshot_file(image_file, screenshot_type)
+                from store.models import Screenshot
+                s = Screenshot(
+                    app=app,
+                    image=image_file,
+                    type=screenshot_type,
+                    display_order=next_order,
+                )
+                s.save()
+                next_order += 1
+                saved += 1
+            except ValidationError as e:
+                errors.append(f'{image_file.name}: {e.messages[0]}')
+
+        if saved:
+            messages.success(request, f'{saved} screenshot{"s" if saved != 1 else ""} uploaded successfully.')
+        for err in errors:
+            messages.error(request, err)
+        return redirect('dashboard_edit_app', slug=app.slug)
+
+    return render(request, 'dashboard/screenshot_form.html', {'app': app})
 
 
 @app_edit_required

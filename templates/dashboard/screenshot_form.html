@@ -1,38 +1,140 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Add Screenshot{% endblock %}
+{% block title %}Add Screenshots — {{ app.name }}{% endblock %}
 
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+  .ss-wrap { max-width: 680px; }
+  .ss-page-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--gray-900); }
+  .ss-page-title span { color: var(--gray-500); font-weight: 400; font-size: 1rem; margin-left: .5rem; }
+
+  /* Type toggle — match existing btn style */
+  .type-row { display: flex; gap: .5rem; margin-bottom: 1.25rem; }
+  .type-radio { display: none; }
+  .type-label {
+    flex: 1; padding: .55rem 1rem; border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200); background: var(--white);
+    text-align: center; cursor: pointer; font-weight: 500;
+    font-size: .875rem; color: var(--gray-700); transition: all .15s;
+  }
+  .type-radio:checked + .type-label {
+    border-color: var(--blue); background: var(--blue-light);
+    color: var(--blue); font-weight: 600;
+  }
+
+  /* File picker */
+  .file-pick-area {
+    border: 2px dashed var(--gray-200); border-radius: var(--radius-sm);
+    padding: 2.5rem 1rem; text-align: center; cursor: pointer;
+    background: var(--white); transition: border-color .2s, background .2s;
+    position: relative;
+  }
+  .file-pick-area:hover { border-color: var(--blue); background: var(--blue-light); }
+  .file-pick-area input[type=file] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+  .file-pick-icon { font-size: 2.25rem; margin-bottom: .5rem; }
+  .file-pick-title { font-size: .95rem; font-weight: 600; color: var(--gray-800); margin-bottom: .25rem; }
+  .file-pick-sub { font-size: .8rem; color: var(--gray-500); }
+
+  /* Preview grid */
+  .preview-wrap { margin-top: 1rem; }
+  .preview-label { font-size: .8rem; font-weight: 600; color: var(--gray-500); margin-bottom: .5rem; text-transform: uppercase; letter-spacing: .04em; }
+  .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: .5rem; }
+  .preview-thumb { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 9/16; background: var(--bg); border: 1px solid var(--gray-200); }
+  .preview-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* File count badge */
+  .file-count { display: inline-block; margin-top: .75rem; background: var(--blue-light); color: var(--blue); border-radius: 20px; padding: 3px 12px; font-size: .8rem; font-weight: 600; }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="dashboard-layout">
-    {% include 'dashboard/sidebar.html' %}
-    <div class="dashboard-main">
-        <div class="dashboard-header"><h1>Add Screenshot — {{ app.name }}</h1></div>
-        <form method="post" enctype="multipart/form-data" class="dashboard-form narrow">
-            {% csrf_token %}
-            {% for field in form %}
-            <div class="form-group">
-                <label>{{ field.label }}{% if field.field.required %}<span class="required-mark">*</span>{% endif %}</label>
-                {% if field.field.widget.input_type == 'file' %}
-                <div class="file-input-wrap">
-                    {{ field }}
-                    <span class="file-input-text">No file chosen</span>
-                </div>
-                {% else %}
-                {{ field }}
-                {% endif %}
-                {% if field.errors %}<div class="field-error">{{ field.errors.0 }}</div>{% endif %}
+  {% include 'dashboard/sidebar.html' %}
+  <div class="dashboard-main">
+    <div class="ss-wrap">
+
+      <div class="dashboard-header">
+        <h1>Add Screenshots &mdash; <span style="color:var(--gray-500);font-weight:400;">{{ app.name }}</span></h1>
+        <p>Select one or more images to upload as screenshots for this app.</p>
+      </div>
+
+      <div class="dashboard-form">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label style="font-weight:600;font-size:.875rem;display:block;margin-bottom:.5rem;color:var(--gray-700);">Screenshot Type</label>
+            <div class="type-row">
+              <input type="radio" name="type" id="type-mobile" value="mobile" class="type-radio" checked>
+              <label for="type-mobile" class="type-label">&#128241; Mobile</label>
+              <input type="radio" name="type" id="type-tablet" value="tablet" class="type-radio">
+              <label for="type-tablet" class="type-label">&#128187; Tablet</label>
             </div>
-            {% endfor %}
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Upload</button>
-                <a href="{% url 'dashboard_edit_app' app.slug %}" class="btn btn-outline">Cancel</a>
+          </div>
+
+          <div class="form-group">
+            <label style="font-weight:600;font-size:.875rem;display:block;margin-bottom:.5rem;color:var(--gray-700);">
+              Images <span style="font-weight:400;color:var(--gray-400);">(hold Ctrl to pick multiple)</span>
+            </label>
+            <div class="file-pick-area">
+              <input type="file" name="images" id="file-input" multiple accept="image/*">
+              <div class="file-pick-icon">&#128444;&#65039;</div>
+              <div class="file-pick-title">Click to choose screenshots</div>
+              <div class="file-pick-sub">PNG, JPG, WEBP, GIF &mdash; pick as many as you want</div>
             </div>
+            <span class="file-count" id="file-count" style="display:none;"></span>
+            <div class="preview-wrap" id="preview-wrap" style="display:none;">
+              <div class="preview-label">Preview</div>
+              <div class="preview-grid" id="preview-grid"></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Upload Screenshots</button>
+            <a href="{% url 'dashboard_edit_app' app.slug %}" class="btn btn-outline">Cancel</a>
+          </div>
+
         </form>
+      </div>
+
     </div>
+  </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}<script src="{% static 'js/dashboard.js' %}"></script>{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+  var fileInput  = document.getElementById('file-input');
+  var grid       = document.getElementById('preview-grid');
+  var previewWrap= document.getElementById('preview-wrap');
+  var fileCount  = document.getElementById('file-count');
+
+  fileInput.addEventListener('change', function () {
+    grid.innerHTML = '';
+    var files = Array.from(fileInput.files);
+    if (files.length > 0) {
+      fileCount.style.display = 'inline-block';
+      fileCount.textContent = files.length + ' file' + (files.length !== 1 ? 's' : '') + ' selected';
+      previewWrap.style.display = 'block';
+    } else {
+      fileCount.style.display = 'none';
+      previewWrap.style.display = 'none';
+    }
+    files.forEach(function (file) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var wrap = document.createElement('div');
+        wrap.className = 'preview-thumb';
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        wrap.appendChild(img);
+        grid.appendChild(wrap);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
+{% endblock %}
