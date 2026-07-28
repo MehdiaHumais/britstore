@@ -243,11 +243,11 @@ def upload_release(request):
     )
     version_obj.save()
 
+    app.apk_file = version_obj.apk_file
     if hasattr(version_obj.apk_file, 'size'):
         app.file_size = version_obj.apk_file.size
     app.version = version
     app.release_notes = release_notes
-    app.apk_file = apk_file
     app.save()
 
     token.last_used = models.functions.Now()
