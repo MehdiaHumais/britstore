@@ -11,9 +11,15 @@
     <div class="dashboard-main">
         <div class="dashboard-header flex-between">
             <h1>Contact Messages</h1>
-            {% if unread_count %}
-            <span class="badge badge-featured" style="font-size:.85rem;padding:.35rem .85rem">{{ unread_count }} unread</span>
-            {% endif %}
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                {% if unread_count %}
+                <span class="badge badge-featured" style="font-size:.85rem;padding:.35rem .85rem">{{ unread_count }} unread</span>
+                {% endif %}
+                <form method="post" action="{% url 'dashboard_clear_messages' %}" onsubmit="return confirm('Delete ALL messages? This cannot be undone.')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Clear All Messages</button>
+                </form>
+            </div>
         </div>
         {% for msg in messages_list %}
         <div class="dashboard-card message-card" style="{% if not msg.is_read %}border-left:4px solid var(--blue);background:var(--blue-light){% endif %}">

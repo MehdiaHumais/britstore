@@ -59,7 +59,10 @@ urlpatterns = [
     path('dashboard/api-tokens/<int:pk>/revoke/', views.revoke_api_token, name='dashboard_api_token_revoke'),
     path('dashboard/api-tokens/<int:pk>/regenerate/', views.regenerate_api_token, name='dashboard_api_token_regenerate'),
     path('dashboard/messages/', views.contact_messages, name='dashboard_messages'),
+    path('dashboard/messages/clear-all/', views.clear_all_messages, name='dashboard_clear_messages'),
     path('notifications/<int:pk>/read/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/mark-all-read/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('notifications/clear-all/', views.clear_all_notifications, name='clear_all_notifications'),
     path('rate/', views.rate_app, name='rate_app'),
     path('search_ajax/', views.search_ajax, name='search_ajax'),
 

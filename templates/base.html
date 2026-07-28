@@ -58,6 +58,13 @@
                         {% empty %}
                         <div class="notif-empty">No notifications</div>
                         {% endfor %}
+                        <div class="notif-actions" style="display:flex;gap:.5rem;padding:.5rem 1rem;border-top:1px solid var(--border)">
+                            <a href="{% url 'mark_all_notifications_read' %}" class="btn btn-outline btn-sm" style="flex:1;font-size:.75rem">Mark All Read</a>
+                            <form method="post" action="{% url 'clear_all_notifications' %}" style="flex:1" onsubmit="return confirm('Clear all notifications?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline btn-sm" style="width:100%;font-size:.75rem;color:var(--red)">Clear All</button>
+                            </form>
+                        </div>
                         <a href="{% url 'dashboard_home' %}" class="notif-footer">View all in Dashboard</a>
                     </div>
                 </div>

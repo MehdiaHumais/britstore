@@ -993,6 +993,30 @@ def mark_notification_read(request, pk):
 
 
 @super_admin_required
+def mark_all_notifications_read(request):
+    Notification.objects.filter(is_read=False).update(is_read=True)
+    messages.success(request, 'All notifications marked as read.')
+    return redirect('dashboard_home')
+
+
+@super_admin_required
+def clear_all_notifications(request):
+    if request.method == 'POST':
+        Notification.objects.all().delete()
+        messages.success(request, 'All notifications cleared.')
+    return redirect('dashboard_home')
+
+
+@super_admin_required
+def clear_all_messages(request):
+    if request.method == 'POST':
+        from store.models import ContactMessage
+        ContactMessage.objects.all().delete()
+        messages.success(request, 'All contact messages cleared.')
+    return redirect('dashboard_messages')
+
+
+@super_admin_required
 def toggle_publish(request, slug):
     app = get_object_or_404(App, slug=slug)
     app.published = not app.published
