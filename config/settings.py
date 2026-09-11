@@ -119,7 +119,7 @@ LOGIN_REDIRECT_URL = 'dashboard_home'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Email — Resend
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_KpqZ65nZ_EC5NYsWjsP4PkMC88SLfNtuh')
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'BritStore <britsyncuk@gmail.com>')
 
 # WebAuthn
