@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm
 from django.core.exceptions import ValidationError
 
 from store.models import App, AppVersion, Category, ContactMessage, Screenshot, User, WebsiteSettings
@@ -22,8 +22,34 @@ class StyledFormMixin:
 
 
 class LoginForm(StyledFormMixin, AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username', 'autofocus': True}))
+    username = forms.EmailField(
+        label='Email',
+        widget=forms.EmailInput(attrs={'placeholder': 'your@email.com', 'autofocus': True})
+    )
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+
+    def clean_username(self):
+        email = self.cleaned_data.get('username', '').strip()
+        if not email:
+            raise forms.ValidationError('Email is required.')
+        users = list(User.objects.filter(email__iexact=email).order_by('pk'))
+        if not users:
+            raise forms.ValidationError('No account found with this email address.')
+        for u in users:
+            if u.is_active and u.is_super_admin:
+                return u.username
+        for u in users:
+            if u.is_active:
+                return u.username
+        return users[0].username
+
+
+class PasswordResetFormStyled(StyledFormMixin, PasswordResetForm):
+    pass
+
+
+class SetPasswordFormStyled(StyledFormMixin, SetPasswordForm):
+    pass
 
 
 class ContactForm(StyledFormMixin, forms.ModelForm):

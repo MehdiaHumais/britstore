@@ -20,11 +20,21 @@
                 </div>
                 <div class="form-group">
                     <label for="id_password1">Password <span style="color:var(--red)">*</span></label>
-                    <input type="password" name="password1" id="id_password1" class="form-control" required minlength="8" placeholder="Min 8 characters">
+                    <div class="password-wrapper">
+                        <input type="password" name="password1" id="id_password1" class="form-control" required minlength="8" placeholder="Min 8 characters">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="id_password2">Confirm Password <span style="color:var(--red)">*</span></label>
-                    <input type="password" name="password2" id="id_password2" class="form-control" required minlength="8" placeholder="Re-enter password">
+                    <div class="password-wrapper">
+                        <input type="password" name="password2" id="id_password2" class="form-control" required minlength="8" placeholder="Re-enter password">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-block">Attach &amp; Save</button>

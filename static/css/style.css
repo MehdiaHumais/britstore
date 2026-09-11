@@ -858,6 +858,37 @@ a:hover { color: var(--black); }
     .rating-stars-display .star { font-size: 1rem; }
 }
 
+/* Password toggle */
+.password-wrapper {
+    position: relative;
+}
+.password-wrapper .form-control,
+.password-wrapper input {
+    padding-right: 2.75rem;
+}
+.password-toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-400);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.password-toggle-btn:hover {
+    color: var(--gray-700);
+}
+.password-toggle-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
 /* Reviews */
 .reviews-list { display:flex; flex-direction:column; gap:.75rem; }
 .review-item {

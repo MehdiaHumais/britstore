@@ -9,10 +9,14 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Count, F, Max, Q
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from user_agents import parse
 from webauthn import (
@@ -36,7 +40,9 @@ from store.forms import (
     CategoryForm,
     ContactForm,
     LoginForm,
+    PasswordResetFormStyled,
     ScreenshotForm,
+    SetPasswordFormStyled,
     SignUpForm,
     WebsiteSettingsForm,
 )
@@ -220,6 +226,84 @@ def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')
     return redirect('home')
+
+
+def _pick_user_by_email(email):
+    """Resolve an email to a single user, preferring active super admins."""
+    users = list(User.objects.filter(email__iexact=email, is_active=True).order_by('pk'))
+    for u in users:
+        if u.is_super_admin:
+            return u
+    return users[0] if users else None
+
+
+def password_reset_request(request):
+    form = PasswordResetFormStyled(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        email = form.cleaned_data['email']
+        user = _pick_user_by_email(email)
+        if user:
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_url = request.build_absolute_uri(
+                reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token}),
+            )
+            site = WebsiteSettings.get_solo()
+            send_email_resend(
+                to_email=email,
+                subject=f'Reset your {site.site_name} password',
+                text_body=(
+                    f"Hi {user.username},\n\n"
+                    f"We received a request to reset your {site.site_name} password.\n\n"
+                    f"Click the link below to choose a new password (expires in 24 hours):\n"
+                    f"{reset_url}\n\n"
+                    f"If you didn't request this, you can safely ignore this email.\n\n"
+                    f"Thanks,\n{site.site_name} Team"
+                ),
+            )
+        return redirect('password_reset_done')
+    return render(request, 'password_reset_form.html', {'form': form})
+
+
+def password_reset_done(request):
+    return render(request, 'password_reset_done.html')
+
+
+def password_reset_confirm(request, uidb64, token):
+    user = None
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, UnicodeDecodeError, User.DoesNotExist):
+        user = None
+
+    validlink = user is not None and default_token_generator.check_token(user, token)
+    if not validlink:
+        return render(request, 'password_reset_confirm.html', {'validlink': False})
+
+    if request.method == 'POST':
+        form = SetPasswordFormStyled(user, request.POST)
+        if form.is_valid():
+            form.save()
+            site = WebsiteSettings.get_solo()
+            send_email_resend(
+                to_email=user.email,
+                subject=f'Your {site.site_name} password was changed',
+                text_body=(
+                    f"Hi {user.username},\n\n"
+                    f"Your {site.site_name} password has been reset successfully.\n"
+                    f"Sign in with your new password.\n\n"
+                    f"Thanks,\n{site.site_name} Team"
+                ),
+            )
+            return redirect('password_reset_complete')
+    else:
+        form = SetPasswordFormStyled(user)
+    return render(request, 'password_reset_confirm.html', {'form': form, 'validlink': True})
+
+
+def password_reset_complete(request):
+    return render(request, 'password_reset_complete.html')
 
 
 def signup_view(request):

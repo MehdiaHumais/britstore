@@ -39,15 +39,30 @@
                 <h3 style="font-size:1rem;margin-bottom:1rem">Change Password</h3>
                 <div class="form-group">
                     <label for="id_current_password">Current Password</label>
-                    <input type="password" name="current_password" id="id_current_password" class="form-control" placeholder="Leave blank to keep same">
+                    <div class="password-wrapper">
+                        <input type="password" name="current_password" id="id_current_password" class="form-control" placeholder="Leave blank to keep same">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="id_new_password1">New Password</label>
-                    <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="Min 8 characters">
+                    <div class="password-wrapper">
+                        <input type="password" name="new_password1" id="id_new_password1" class="form-control" placeholder="Min 8 characters">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="id_new_password2">Confirm New Password</label>
-                    <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Re-enter new password">
+                    <div class="password-wrapper">
+                        <input type="password" name="new_password2" id="id_new_password2" class="form-control" placeholder="Re-enter new password">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
                 </div>
                 {% if user.is_fingerprint_user and not user.has_upgraded %}
                 <div class="help-text" style="margin-bottom:1rem;color:var(--gray-500);font-size:.8rem">Set an email and password as a recovery method for your fingerprint account.</div>
