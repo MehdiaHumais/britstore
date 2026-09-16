@@ -39,24 +39,23 @@ def scan_file_for_malware(file):
     return True
 
 
-def send_email_resend(to_email, subject, text_body):
-    """Send email via Resend API. Falls back to console log on failure."""
+def send_email(to_email, subject, text_body, from_email=None):
+    """Send email via the configured Django SMTP backend. Falls back to console log on failure."""
     try:
-        import resend
-        resend.api_key = settings.RESEND_API_KEY
-        params = {
-            'from': settings.DEFAULT_FROM_EMAIL,
-            'to': [to_email],
-            'subject': subject,
-            'text': text_body,
-        }
-        response = resend.Emails.send(params)
-        logger.info('Email sent to %s via Resend: %s', to_email, response)
+        from django.core.mail import send_mail
+        send_mail(
+            subject=subject,
+            message=text_body,
+            from_email=from_email or settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[to_email],
+            fail_silently=False,
+        )
+        logger.info('Email sent to %s via SMTP', to_email)
         return True
     except Exception as e:
-        logger.warning('Resend email failed to %s: %s', to_email, e)
+        logger.warning('Email failed to %s: %s', to_email, e)
         # Fallback: log to console
-        print(f'--- EMAIL TO {to_email} (Resend failed: {e}) ---')
+        print(f'--- EMAIL TO {to_email} (SMTP failed: {e}) ---')
         print(f'Subject: {subject}')
         print(text_body)
         print('--- END EMAIL (console fallback) ---')

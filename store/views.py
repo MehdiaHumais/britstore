@@ -69,7 +69,7 @@ from store.permissions import (
     user_can_delete_app,
     user_can_edit_app,
 )
-from store.services import scan_file_for_malware, send_email_resend
+from store.services import scan_file_for_malware, send_email
 from store.utils import validate_screenshot_file
 
 logger = logging.getLogger(__name__)
@@ -194,7 +194,7 @@ def contact_view(request):
                 message=msg.subject,
                 link='/dashboard/messages/',
             )
-            send_email_resend(
+            send_email(
                 to_email=WebsiteSettings.get_solo().support_email,
                 subject=f'[BritStore Contact] {msg.subject}',
                 text_body=f'From: {msg.name} ({msg.email})\n\n{msg.message}',
@@ -249,7 +249,7 @@ def password_reset_request(request):
                 reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token}),
             )
             site = WebsiteSettings.get_solo()
-            send_email_resend(
+            send_email(
                 to_email=email,
                 subject=f'Reset your {site.site_name} password',
                 text_body=(
@@ -286,7 +286,7 @@ def password_reset_confirm(request, uidb64, token):
         if form.is_valid():
             form.save()
             site = WebsiteSettings.get_solo()
-            send_email_resend(
+            send_email(
                 to_email=user.email,
                 subject=f'Your {site.site_name} password was changed',
                 text_body=(
@@ -1073,7 +1073,7 @@ def contact_messages(request):
             msg = get_object_or_404(ContactMessage, pk=reply_id)
             msg.is_read = True
             msg.save()
-            sent = send_email_resend(
+            sent = send_email(
                 to_email=msg.email,
                 subject=f'Re: {msg.subject} — BritStore',
                 text_body=f'Dear {msg.name},\n\n{reply_text}\n\n— BritStore Support\n{WebsiteSettings.get_solo().support_email}',
