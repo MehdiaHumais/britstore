@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def validate_app_upload(apk_file, version, app=None, is_new_version=False):
     """
-    Validate uploaded APK/XAPK files.
+    Validate uploaded app files (APK/XAPK/EXE).
     Hook point for future virus scanning integration.
     """
     validate_upload_file(apk_file)
@@ -24,7 +24,7 @@ def validate_app_upload(apk_file, version, app=None, is_new_version=False):
         from store.models import AppVersion
         if app.version == version:
             existing_versions = AppVersion.objects.filter(app=app, version=version)
-            if not existing_versions.exists() and app.apk_file:
+            if not existing_versions.exists() and (app.apk_file or app.exe_file):
                 logger.info('Updating app %s to same version %s', app.slug, version)
 
     logger.info('Upload validated: %s (%s bytes)', apk_file.name, apk_file.size)

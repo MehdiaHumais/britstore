@@ -1,0 +1,6 @@
+{% if platform and other_platform %}
+<div class="platform-switch">
+    <span class="platform-switch-label">Showing <strong>{{ platform_label }}</strong> apps</span>
+    <a class="btn btn-outline btn-sm" href="?platform={{ other_platform }}{{ switch_extra }}">Show {{ other_platform_label }} apps</a>
+</div>
+{% endif %}

@@ -425,6 +425,18 @@
     font-size: .8rem;
     color: var(--gray-400);
 }
+.clear-files {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gray-500);
+    border-radius: 999px;
+    font-size: .7rem;
+    padding: .2rem .65rem;
+    cursor: pointer;
+    font-family: var(--font);
+    flex-shrink: 0;
+}
+.clear-files:hover { border-color: #991b1b; color: #991b1b; }
 
 /* Style Django form file fields (apk_file, icon) */
 .form-control[type="file"]:not(.file-input),

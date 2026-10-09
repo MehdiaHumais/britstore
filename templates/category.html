@@ -9,6 +9,7 @@
             <h1>{{ category.name }}</h1>
             {% if category.description %}<p>{{ category.description }}</p>{% endif %}
         </div>
+        {% include 'partials/platform_switch.html' %}
         {% if apps %}
         <div class="app-grid">
             {% for app in apps %}

@@ -3,7 +3,7 @@
 
 {% block title %}{% if is_edit %}Edit App{% else %}Upload App{% endif %}{% endblock %}
 
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=2">{% endblock %}
 
 {% block content %}
 <div class="dashboard-layout">
@@ -15,6 +15,15 @@
 
         <form method="post" enctype="multipart/form-data" class="dashboard-form">
             {% csrf_token %}
+            {% if form.non_field_errors or form.errors %}
+            <div class="alert alert-error" id="formErrors" style="margin-bottom:1rem">
+                <strong>Upload failed &mdash; please fix the following:</strong>
+                <ul class="error-list">
+                    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                    {% for field in form %}{% for error in field.errors %}<li><strong>{{ field.label }}:</strong> {{ error }}</li>{% endfor %}{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             <div class="form-grid" id="appFormGrid">
                 {% for field in form %}
                 {% if field.name == 'price' or field.name == 'currency' %}
@@ -40,30 +49,44 @@
                 {% endfor %}
             </div>
 
-            {% if not is_edit %}
-            <div class="form-section">
+                        {% if not is_edit %}
+            <div class="form-section" id="screenshotSection">
                 <h3>Screenshots <span class="required-mark">*</span></h3>
-                <p class="help-text">Upload at least <strong>7 screenshots</strong> (preferably all mobile, with tablet screenshots as a bonus). You can add more later on the edit page.</p>
-                <div class="form-group">
+                <p class="help-text" id="screenshotHelp">Upload at least <strong>7 screenshots</strong> for Android apps.</p>
+                <div class="form-group" id="mobileScreenshotsGroup">
                     <label>Mobile Screenshots <span class="required-mark">*</span></label>
                     <div class="file-input-wrap">
-                        <input type="file" name="mobile_screenshots" id="mobileFiles" multiple accept="image/*" class="file-input" onchange="previewScreenshots(this, 'mobilePreviews')">
+                        <input type="file" name="mobile_screenshots" id="mobileFiles" multiple accept="image/*" class="file-input" onchange="handleFiles(this, 'mobile')">
                         <label for="mobileFiles" class="file-input-label">Choose Files</label>
                         <span class="file-input-text" id="mobileFileText">No files chosen</span>
+                        <button type="button" class="clear-files" id="mobileClear" onclick="clearFiles('mobile')" style="display:none">Clear</button>
                     </div>
-                    <small class="help-text">Select at least 7 mobile screenshots (hold Ctrl/Cmd to select multiple). Min width 320px.</small>
+                    <small class="help-text"><span id="mobileCount">0 / 7 selected</span> &middot; Select at least 7 mobile screenshots (you can pick them one at a time). Min width 320px.</small>
                     <div class="screenshot-previews" id="mobilePreviews"></div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="tabletScreenshotsGroup">
                     <label>Tablet Screenshots</label>
                     <div class="file-input-wrap">
-                        <input type="file" name="tablet_screenshots" id="tabletFiles" multiple accept="image/*" class="file-input" onchange="previewScreenshots(this, 'tabletPreviews')">
+                        <input type="file" name="tablet_screenshots" id="tabletFiles" multiple accept="image/*" class="file-input" onchange="handleFiles(this, 'tablet')">
                         <label for="tabletFiles" class="file-input-label">Choose Files</label>
                         <span class="file-input-text" id="tabletFileText">No files chosen</span>
+                        <button type="button" class="clear-files" id="tabletClear" onclick="clearFiles('tablet')" style="display:none">Clear</button>
                     </div>
-                    <small class="help-text">Optional — upload tablet screenshots here. Min width 600px.</small>
+                    <small class="help-text"><span id="tabletCount">0 selected</span> &middot; Optional - upload tablet screenshots here. Min width 600px.</small>
                     <div class="screenshot-previews" id="tabletPreviews"></div>
                 </div>
+                <div class="form-group" id="desktopScreenshotsGroup" style="display:none">
+                    <label>Desktop Screenshots <span class="required-mark">*</span></label>
+                    <div class="file-input-wrap">
+                        <input type="file" name="desktop_screenshots" id="desktopFiles" multiple accept="image/*" class="file-input" onchange="handleFiles(this, 'desktop')">
+                        <label for="desktopFiles" class="file-input-label">Choose Files</label>
+                        <span class="file-input-text" id="desktopFileText">No files chosen</span>
+                        <button type="button" class="clear-files" id="desktopClear" onclick="clearFiles('desktop')" style="display:none">Clear</button>
+                    </div>
+                    <small class="help-text"><span id="desktopCount">0 / 5 selected</span> &middot; Upload desktop app screenshots (recommended: 5-7 screenshots showing main UI). You can add them one at a time — earlier picks are kept.</small>
+                    <div class="screenshot-previews" id="desktopPreviews"></div>
+                </div>
+                <p class="field-error" id="screenshotError" style="display:none"></p>
             </div>
             {% endif %}
 
@@ -128,10 +151,56 @@
 {% block extra_js %}
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
-function previewScreenshots(input, containerId) {
-    var container = document.getElementById(containerId);
-    container.innerHTML = '';
+var SHOT_CONFIG = {
+    mobile:  { input:'mobileFiles',  preview:'mobilePreviews',  text:'mobileFileText',  clear:'mobileClear',  count:'mobileCount',  min:7, label:'mobile' },
+    tablet:  { input:'tabletFiles',  preview:'tabletPreviews',  text:'tabletFileText',  clear:'tabletClear',  count:'tabletCount',  min:0, label:'tablet' },
+    desktop: { input:'desktopFiles', preview:'desktopPreviews', text:'desktopFileText', clear:'desktopClear', count:'desktopCount', min:5, label:'desktop' }
+};
+var fileStore = {};
+
+function newTransfer() {
+    return (typeof DataTransfer !== 'undefined') ? new DataTransfer() : null;
+}
+
+function accumulate(key, input) {
+    var dt = fileStore[key] || newTransfer();
+    if (!dt) return;
+    fileStore[key] = dt;
+    for (var i = 0; i < input.files.length; i++) {
+        var f = input.files[i], dup = false;
+        for (var j = 0; j < dt.items.length; j++) {
+            var e = dt.items[j].getAsFile();
+            if (e && e.name === f.name && e.size === f.size && e.lastModified === f.lastModified) { dup = true; break; }
+        }
+        if (!dup) dt.items.add(f);
+    }
+    try { input.files = dt.files; } catch (err) {}
+}
+
+function handleFiles(input, key) {
+    accumulate(key, input);
+    renderShots(key);
+    hideShotError();
+}
+
+function clearFiles(key) {
+    var cfg = SHOT_CONFIG[key];
+    var input = document.getElementById(cfg.input);
+    fileStore[key] = newTransfer();
+    if (fileStore[key]) { try { input.files = fileStore[key].files; } catch (err) {} }
+    renderShots(key);
+}
+
+function renderShots(key) {
+    var cfg = SHOT_CONFIG[key];
+    var input = document.getElementById(cfg.input);
+    var container = document.getElementById(cfg.preview);
+    var textEl = document.getElementById(cfg.text);
+    var countEl = document.getElementById(cfg.count);
+    var clearEl = document.getElementById(cfg.clear);
+    if (!input || !container) return;
     var files = input.files;
+    container.innerHTML = '';
     var maxPreview = Math.min(files.length, 10);
     for (var i = 0; i < maxPreview; i++) {
         (function(file) {
@@ -156,12 +225,30 @@ function previewScreenshots(input, containerId) {
         none.textContent = 'No files';
         container.appendChild(none);
     }
-    var textId = containerId === 'mobilePreviews' ? 'mobileFileText' : 'tabletFileText';
-    var textEl = document.getElementById(textId);
-    if (textEl) textEl.textContent = files.length + ' file(s) selected';
+    if (textEl) textEl.textContent = files.length ? files.length + ' file(s) selected' : 'No files chosen';
+    if (countEl) countEl.textContent = cfg.min ? (files.length + ' / ' + cfg.min + ' selected') : (files.length + ' selected');
+    if (clearEl) clearEl.style.display = files.length ? '' : 'none';
 }
 
+function shotError(msg) {
+    var el = document.getElementById('screenshotError');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = '';
+    if (el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideShotError() {
+    var el = document.getElementById('screenshotError');
+    if (el) el.style.display = 'none';
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
+    var formErrors = document.getElementById('formErrors');
+    if (formErrors && formErrors.scrollIntoView) {
+        formErrors.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     var priceType = document.getElementById('id_price_type');
     if (priceType) {
         priceType.addEventListener('change', function() {
@@ -169,6 +256,63 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.paid-only').forEach(function(el) {
                 el.style.display = show ? '' : 'none';
             });
+        });
+    }
+    var platform = document.getElementById('id_platform');
+    if (platform) {
+        function togglePlatform() {
+            var p = platform.value;
+            var apkGroup = document.getElementById('field_apk_file');
+            var exeGroup = document.getElementById('field_exe_file');
+            var pkg = document.getElementById('field_package_name');
+            var androidVer = document.getElementById('field_android_version');
+            var winVer = document.getElementById('field_windows_version');
+            if (apkGroup) apkGroup.style.display = (p === 'android') ? '' : 'none';
+            if (exeGroup) exeGroup.style.display = (p === 'desktop') ? '' : 'none';
+            if (androidVer) androidVer.style.display = (p === 'android') ? '' : 'none';
+            if (winVer) winVer.style.display = (p === 'desktop') ? '' : 'none';
+            var mobileGroup = document.getElementById('mobileScreenshotsGroup');
+            var tabletGroup = document.getElementById('tabletScreenshotsGroup');
+            var desktopGroup = document.getElementById('desktopScreenshotsGroup');
+            var help = document.getElementById('screenshotHelp');
+            if (p === 'desktop') {
+                if (mobileGroup) mobileGroup.style.display = 'none';
+                if (tabletGroup) tabletGroup.style.display = 'none';
+                if (desktopGroup) desktopGroup.style.display = '';
+                if (help) help.innerHTML = 'Upload at least <strong>5 screenshots</strong> for Desktop apps.';
+            } else {
+                if (mobileGroup) mobileGroup.style.display = '';
+                if (tabletGroup) tabletGroup.style.display = '';
+                if (desktopGroup) desktopGroup.style.display = 'none';
+                if (help) help.innerHTML = 'Upload at least <strong>7 screenshots</strong> for Android apps.';
+            }
+        }
+        platform.addEventListener('change', togglePlatform);
+        togglePlatform();
+    }
+
+    ['mobile', 'tablet', 'desktop'].forEach(function(key) {
+        var el = document.getElementById(SHOT_CONFIG[key].input);
+        if (el && el.files && el.files.length) renderShots(key);
+    });
+
+    var uploadForm = document.querySelector('form.dashboard-form');
+    var shotSection = document.getElementById('screenshotSection');
+    if (uploadForm && shotSection) {
+        uploadForm.addEventListener('submit', function(e) {
+            var p = (platform && platform.value) || 'android';
+            var key = (p === 'desktop') ? 'desktop' : 'mobile';
+            var cfg = SHOT_CONFIG[key];
+            var n = document.getElementById(cfg.input).files.length;
+            if (n < cfg.min) {
+                e.preventDefault();
+                shotError('Please select at least ' + cfg.min + ' ' + cfg.label +
+                          ' screenshots before uploading (you have selected ' + n + '). ' +
+                          'Your earlier picks are kept — just click "Choose Files" again to add more.');
+                return false;
+            }
+            hideShotError();
+            return true;
         });
     }
 });

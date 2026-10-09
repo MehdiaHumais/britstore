@@ -9,42 +9,82 @@
             <h1>{% if query %}Results for "{{ query }}"{% else %}All Apps{% endif %}</h1>
             <p>Browse all available BritStore applications — latest versions listed first</p>
         </div>
-        {% if apps %}
-        <div class="downloads-table-wrap">
-            <table class="downloads-table">
-                <thead>
-                    <tr>
-                        <th>App</th>
-                        <th>Category</th>
-                        <th>Version</th>
-                        <th>Size</th>
-                        <th>Downloads</th>
-                        <th>Updated</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for app in apps %}
-                    <tr>
-                        <td>
-                            <div class="table-app">
-                                {% if app.icon %}<img src="{{ app.icon.url }}" alt="">{% endif %}
-                                <a href="{% url 'app_detail' app.slug %}">{{ app.name }}</a>
-                            </div>
-                        </td>
-                        <td>{{ app.category.name }}</td>
-                        <td>v{{ app.version }}</td>
-                        <td>{{ app.file_size_display }}</td>
-                        <td>{{ app.download_count }}</td>
-                        <td>{{ app.updated_at|date:"M d, Y" }}</td>
-                        <td>
-                            <a href="{% url 'app_detail' app.slug %}" class="btn btn-outline btn-sm">View</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+
+        {% if desktop_apps or android_apps %}
+            {% if platform == 'all' %}
+                <div class="platform-section" id="section-desktop">
+                    <div class="section-header">
+                        <h2>🖥️ Desktop Apps</h2>
+                        <span class="platform-section-meta">{{ desktop_count }} app{{ desktop_count|pluralize }} &middot; Windows .exe installers</span>
+                    </div>
+                    {% with table_apps=desktop_apps %}
+                    {% include 'partials/apps_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class="platform-section" id="section-android">
+                    <div class="section-header">
+                        <h2>📱 Android Apps</h2>
+                        <span class="platform-section-meta">{{ android_count }} app{{ android_count|pluralize }} &middot; Android .apk packages</span>
+                    </div>
+                    {% with table_apps=android_apps %}
+                    {% include 'partials/apps_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <button type="button" class="btn btn-outline platform-toggle" id="allPlatformToggle" style="display:none"
+                        data-target="" data-label="" data-show-label="" data-hide-label=""></button>
+
+            {% elif platform == 'desktop' %}
+                <div class="platform-section" id="section-desktop">
+                    <div class="section-header">
+                        <h2>🖥️ Desktop Apps</h2>
+                        <span class="platform-section-meta">{{ desktop_count }} app{{ desktop_count|pluralize }} &middot; Windows .exe installers</span>
+                    </div>
+                    {% with table_apps=desktop_apps %}
+                    {% include 'partials/apps_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class="platform-section" id="section-android" style="display:none">
+                    <div class="section-header">
+                        <h2>📱 Android Apps</h2>
+                        <span class="platform-section-meta">{{ android_count }} app{{ android_count|pluralize }} &middot; Android .apk packages</span>
+                    </div>
+                    {% with table_apps=android_apps %}
+                    {% include 'partials/apps_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <button type="button" class="btn btn-outline platform-toggle"
+                        data-target="section-android" data-label="Android apps"
+                        data-show-label="Show Android apps" data-hide-label="Hide Android apps">Show Android apps</button>
+
+            {% else %}
+                <div class="platform-section" id="section-android">
+                    <div class="section-header">
+                        <h2>📱 Android Apps</h2>
+                        <span class="platform-section-meta">{{ android_count }} app{{ android_count|pluralize }} &middot; Android .apk packages</span>
+                    </div>
+                    {% with table_apps=android_apps %}
+                    {% include 'partials/apps_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class="platform-section" id="section-desktop" style="display:none">
+                    <div class="section-header">
+                        <h2>🖥️ Desktop Apps</h2>
+                        <span class="platform-section-meta">{{ desktop_count }} app{{ desktop_count|pluralize }} &middot; Windows .exe installers</span>
+                    </div>
+                    {% with table_apps=desktop_apps %}
+                    {% include 'partials/apps_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <button type="button" class="btn btn-outline platform-toggle"
+                        data-target="section-desktop" data-label="Desktop apps"
+                        data-show-label="Show Desktop apps" data-hide-label="Hide Desktop apps">Show Desktop apps</button>
+            {% endif %}
         {% else %}
         <div class="empty-state">
             <p>{% if query %}No apps found for "{{ query }}"{% else %}No apps available for download yet.{% endif %}</p>
@@ -52,4 +92,44 @@
         {% endif %}
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.platform-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (!target) return;
+        var showing = target.style.display !== 'none';
+        target.style.display = showing ? 'none' : '';
+        btn.textContent = showing
+            ? btn.getAttribute('data-show-label')
+            : btn.getAttribute('data-hide-label');
+        btn.classList.toggle('active-toggle', !showing);
+        if (!showing && target.scrollIntoView) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+var allToggle = document.getElementById('allPlatformToggle');
+if (allToggle) {
+    var isMobile = /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) ||
+        (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    var targetId = isMobile ? 'section-desktop' : 'section-android';
+    var visibleId = isMobile ? 'section-android' : 'section-desktop';
+    var showLabel = isMobile ? 'Show Desktop apps' : 'Show Android apps';
+    var hideLabel = isMobile ? 'Hide Desktop apps' : 'Hide Android apps';
+    allToggle.setAttribute('data-target', targetId);
+    allToggle.setAttribute('data-label', isMobile ? 'Desktop apps' : 'Android apps');
+    allToggle.setAttribute('data-show-label', showLabel);
+    allToggle.setAttribute('data-hide-label', hideLabel);
+    allToggle.textContent = showLabel;
+    allToggle.style.display = '';
+    var hiddenSection = document.getElementById(targetId);
+    if (hiddenSection) hiddenSection.style.display = 'none';
+    var visibleSection = document.getElementById(visibleId);
+    if (visibleSection) visibleSection.insertAdjacentElement('afterend', allToggle);
+}
+</script>
 {% endblock %}

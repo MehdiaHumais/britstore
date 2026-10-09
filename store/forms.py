@@ -34,7 +34,7 @@ class LoginForm(StyledFormMixin, AuthenticationForm):
             raise forms.ValidationError('Email is required.')
         users = list(User.objects.filter(email__iexact=email).order_by('pk'))
         if not users:
-            raise forms.ValidationError('No account found with this email address.')
+            raise forms.ValidationError('No account found with this email address')
         for u in users:
             if u.is_active and u.is_super_admin:
                 return u.username
@@ -77,7 +77,7 @@ class AppForm(StyledFormMixin, forms.ModelForm):
         model = App
         fields = [
             'name', 'short_description', 'full_description', 'category',
-            'version', 'package_name', 'apk_file', 'icon', 'android_version',
+            'version', 'package_name', 'platform', 'apk_file', 'exe_file', 'icon', 'android_version', 'windows_version',
             'release_notes', 'age_rating', 'price_type', 'price', 'currency', 'featured', 'published',
         ]
         widgets = {
@@ -91,26 +91,43 @@ class AppForm(StyledFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields['apk_file'].required = False
+            self.fields['exe_file'].required = False
             self.fields['icon'].required = False
         if self.user and not self.user.is_super_admin:
             self.fields.pop('featured', None)
             self.fields.pop('published', None)
 
+    def _selected_platform(self):
+        # 'platform' is cleaned AFTER 'package_name', so read the raw POST value first
+        return self.data.get('platform') or self.cleaned_data.get('platform') or App.PLATFORM_ANDROID
+
     def clean_package_name(self):
-        pn = self.cleaned_data.get('package_name', '')
-        if not pn:
-            raise ValidationError('Package name (applicationId) is required.')
-        if App.objects.filter(package_name=pn).exclude(pk=self.instance.pk if self.instance.pk else None).exists():
-            raise ValidationError(f'An app with package name "{pn}" already exists.')
+        pn = self.cleaned_data.get('package_name', '') or ''
+        platform = self._selected_platform()
+        if platform == App.PLATFORM_DESKTOP and not pn:
+            pn = ''
+        if platform == App.PLATFORM_ANDROID and not pn:
+            raise ValidationError('Package name (applicationId) is required for Android apps.')
+        if pn:
+            if App.objects.filter(package_name=pn).exclude(pk=self.instance.pk if self.instance.pk else None).exists():
+                raise ValidationError(f'An app with package name "{pn}" already exists.')
         return pn
 
     def clean_apk_file(self):
         apk = self.cleaned_data.get('apk_file')
         if apk:
             validate_upload_file(apk)
-        elif not self.instance.pk:
-            raise ValidationError('APK file is required for new apps.')
+        elif not self.instance.pk and self._selected_platform() == App.PLATFORM_ANDROID:
+            raise ValidationError('APK file is required for new Android apps.')
         return apk
+
+    def clean_exe_file(self):
+        exe = self.cleaned_data.get('exe_file')
+        if exe:
+            validate_upload_file(exe)
+        elif not self.instance.pk and self._selected_platform() == App.PLATFORM_DESKTOP:
+            raise ValidationError('.exe file is required for new Desktop apps.')
+        return exe
 
     def clean_icon(self):
         icon = self.cleaned_data.get('icon')
@@ -122,8 +139,29 @@ class AppForm(StyledFormMixin, forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
-        apk = cleaned.get('apk_file')
+        apk = cleaned.get('apk_file') or cleaned.get('exe_file')
         version = cleaned.get('version')
+        platform = cleaned.get('platform', App.PLATFORM_ANDROID)
+        if platform == App.PLATFORM_DESKTOP:
+            if 'android_version' in cleaned:
+                cleaned.pop('android_version', None)
+            if not cleaned.get('windows_version'):
+                self.add_error('windows_version', 'Windows version is required for desktop apps.')
+        else:
+            if 'windows_version' in cleaned:
+                cleaned.pop('windows_version', None)
+            if not cleaned.get('android_version'):
+                self.add_error('android_version', 'Android version is required for Android apps.')
+        if platform == App.PLATFORM_DESKTOP and not apk and cleaned.get('exe_file'):
+            apk = cleaned.get('exe_file')
+        # Filter out platform-inconsistent errors
+        if platform == App.PLATFORM_DESKTOP:
+            if 'android_version' in self.errors:
+                del self.errors['android_version']
+        else:
+            if 'windows_version' in self.errors:
+                del self.errors['windows_version']
+
         if apk and version:
             try:
                 validate_app_upload(apk, version, app=self.instance if self.instance.pk else None)
@@ -156,12 +194,14 @@ class ScreenshotForm(StyledFormMixin, forms.ModelForm):
 class AppVersionForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = AppVersion
-        fields = ['version', 'version_code', 'apk_file', 'release_notes', 'force_update', 'is_latest']
+        fields = ['version', 'version_code', 'apk_file', 'exe_file', 'release_notes', 'force_update', 'is_latest']
         widgets = {'release_notes': forms.Textarea(attrs={'rows': 4})}
 
     def __init__(self, *args, **kwargs):
         self.app = kwargs.pop('app')
         super().__init__(*args, **kwargs)
+        self.fields['apk_file'].required = False
+        self.fields['exe_file'].required = False
 
     def clean_apk_file(self):
         apk = self.cleaned_data.get('apk_file')
@@ -169,13 +209,19 @@ class AppVersionForm(StyledFormMixin, forms.ModelForm):
             validate_upload_file(apk)
         return apk
 
+    def clean_exe_file(self):
+        exe = self.cleaned_data.get('exe_file')
+        if exe:
+            validate_upload_file(exe)
+        return exe
+
     def clean(self):
         cleaned = super().clean()
-        apk = cleaned.get('apk_file')
+        file = cleaned.get('apk_file') or cleaned.get('exe_file')
         version = cleaned.get('version')
-        if apk and version:
+        if file and version:
             try:
-                validate_app_upload(apk, version, app=self.app, is_new_version=True)
+                validate_app_upload(file, version, app=self.app, is_new_version=True)
             except ValidationError as e:
                 raise ValidationError(e.messages)
         return cleaned

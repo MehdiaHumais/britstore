@@ -133,7 +133,8 @@ WEBAUTHN_RP_NAME = 'BritStore App Store'
 
 # Upload validation
 MAX_UPLOAD_SIZE_MB = 500
-ALLOWED_APK_EXTENSIONS = ['.apk', '.xapk']
+ALLOWED_APK_EXTENSIONS = ['.apk', '.xapk', '.exe']
+ALLOWED_APP_EXTENSIONS = ['.apk', '.xapk', '.exe', '.msi']
 
 LOGGING = {
     'version': 1,
@@ -161,3 +162,7 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+AUTHENTICATION_BACKENDS = ['store.backends.EmailOrUsernameModelBackend']
+
+FILE_UPLOAD_TEMP_DIR = BASE_DIR / 'tmp_uploads'

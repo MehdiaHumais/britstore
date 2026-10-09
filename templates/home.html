@@ -4,7 +4,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% if featured_apps %}
+{% if featured_apps or latest_apps %}
 <section class="hero">
     <div class="container">
         <div class="hero-content">
@@ -49,6 +49,19 @@
         </div>
     </div>
 </section>
+{% endif %}
+
+<div class="container">
+    {% include 'partials/platform_switch.html' %}
+</div>
+
+{% if not featured_apps and not latest_apps %}
+<div class="container">
+    <div class="empty-state">
+        <p>No {{ platform_label }} apps available yet.</p>
+        <a href="?platform={{ other_platform }}" class="btn btn-primary">Show {{ other_platform_label }} apps</a>
+    </div>
+</div>
 {% endif %}
 
 {% if categories %}

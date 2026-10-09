@@ -114,6 +114,10 @@ def app_apk_path(instance, filename):
     return f'apk/{instance.slug or "app"}-{filename}'
 
 
+def app_exe_path(instance, filename):
+    return f'exe/{instance.slug or "app"}-{filename}'
+
+
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
     app = models.ForeignKey('App', on_delete=models.CASCADE, related_name='ratings')
@@ -147,14 +151,26 @@ class App(models.Model):
         (PRICE_FREE, 'Free'),
         (PRICE_PAID, 'Paid'),
     ]
+    PLATFORM_ANDROID = 'android'
+    PLATFORM_DESKTOP = 'desktop'
+    PLATFORM_CHOICES = [
+        (PLATFORM_ANDROID, 'Android'),
+        (PLATFORM_DESKTOP, 'Desktop (Windows)'),
+    ]
+    PRICE_FREE = 'free'
+    PRICE_PAID = 'paid'
+    PRICE_CHOICES = [
+        (PRICE_FREE, 'Free'),
+        (PRICE_PAID, 'Paid'),
+    ]
     CURRENCY_CHOICES = [
-        ('USD', 'USD — US Dollar'),
-        ('PKR', 'PKR — Pakistani Rupee'),
-        ('EUR', 'EUR — Euro'),
-        ('GBP', 'GBP — British Pound'),
-        ('INR', 'INR — Indian Rupee'),
-        ('AED', 'AED — UAE Dirham'),
-        ('SAR', 'SAR — Saudi Riyal'),
+        ('USD', 'USD - US Dollar'),
+        ('PKR', 'PKR - Pakistani Rupee'),
+        ('EUR', 'EUR - Euro'),
+        ('GBP', 'GBP - British Pound'),
+        ('INR', 'INR - Indian Rupee'),
+        ('AED', 'AED - UAE Dirham'),
+        ('SAR', 'SAR - Saudi Riyal'),
     ]
 
     name = models.CharField(max_length=200)
@@ -163,11 +179,14 @@ class App(models.Model):
     full_description = models.TextField(blank=True, default='')
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='apps', null=True, blank=True)
     version = models.CharField(max_length=50)
-    package_name = models.CharField(max_length=200, unique=True, db_index=True)
+    package_name = models.CharField(max_length=200, unique=True, db_index=True, blank=True, default='')
+    platform = models.CharField(max_length=20, choices=PLATFORM_CHOICES, default=PLATFORM_ANDROID)
     apk_file = models.FileField(upload_to=app_apk_path, blank=True, default='')
+    exe_file = models.FileField(upload_to=app_exe_path, blank=True, default='')
     icon = models.ImageField(upload_to=app_icon_path, blank=True, default='')
     file_size = models.PositiveBigIntegerField(default=0, help_text='Size in bytes')
     android_version = models.CharField(max_length=50, default='Android 8+')
+    windows_version = models.CharField(max_length=50, default='Windows 10+', blank=True)
     release_notes = models.TextField(blank=True)
     download_count = models.PositiveIntegerField(default=0)
     featured = models.BooleanField(default=False)
@@ -202,6 +221,13 @@ class App(models.Model):
                 self.file_size = self.apk_file.size
             except (OSError, ValueError):
                 pass
+        if self.exe_file and not self.file_size:
+            try:
+                self.file_size = self.exe_file.size
+            except (OSError, ValueError):
+                pass
+        if self.platform == self.PLATFORM_DESKTOP and not self.package_name:
+            self.package_name = f'com.britstore.{self.slug}' if self.slug else str(uuid.uuid4())
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -276,11 +302,16 @@ def version_apk_path(instance, filename):
     return f'apk/{instance.app.slug}-v{instance.version}-{filename}'
 
 
+def version_exe_path(instance, filename):
+    return f'exe/{instance.app.slug}-v{instance.version}-{filename}'
+
+
 class AppVersion(models.Model):
     app = models.ForeignKey(App, on_delete=models.CASCADE, related_name='versions')
     version = models.CharField(max_length=50)
     version_code = models.IntegerField(default=1, help_text='Numeric version code for comparison (e.g. 3 for v1.0.3)')
-    apk_file = models.FileField(upload_to=version_apk_path)
+    apk_file = models.FileField(upload_to=version_apk_path, blank=True, default='')
+    exe_file = models.FileField(upload_to=version_exe_path, blank=True, default='')
     release_notes = models.TextField(blank=True)
     file_size = models.PositiveBigIntegerField(default=0)
     force_update = models.BooleanField(default=False, help_text='Force users to update to this version')
@@ -298,6 +329,11 @@ class AppVersion(models.Model):
         if self.apk_file and not self.file_size:
             try:
                 self.file_size = self.apk_file.size
+            except (OSError, ValueError):
+                pass
+        if self.exe_file and not self.file_size:
+            try:
+                self.file_size = self.exe_file.size
             except (OSError, ValueError):
                 pass
         if self.is_latest:

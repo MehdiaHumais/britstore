@@ -4,6 +4,7 @@ import logging
 import uuid
 from datetime import timedelta
 from enum import Enum
+from urllib.parse import quote as urlquote
 
 from django.conf import settings
 from django.contrib import messages
@@ -98,6 +99,32 @@ def get_device_type(request):
     return 'Unknown'
 
 
+PLATFORM_LABELS = {
+    App.PLATFORM_ANDROID: 'Android',
+    App.PLATFORM_DESKTOP: 'Desktop',
+}
+
+
+def detect_platform(request):
+    """Pick the platform to show first based on the visitor's device."""
+    return App.PLATFORM_ANDROID if get_device_type(request) in ('Mobile', 'Tablet') else App.PLATFORM_DESKTOP
+
+
+def platform_context(request):
+    """Active platform (from ?platform= or device) plus labels for the toggle button."""
+    valid = {App.PLATFORM_ANDROID, App.PLATFORM_DESKTOP}
+    platform = request.GET.get('platform', '').strip()
+    if platform not in valid:
+        platform = detect_platform(request)
+    other = App.PLATFORM_DESKTOP if platform == App.PLATFORM_ANDROID else App.PLATFORM_ANDROID
+    return {
+        'platform': platform,
+        'other_platform': other,
+        'platform_label': PLATFORM_LABELS[platform],
+        'other_platform_label': PLATFORM_LABELS[other],
+    }
+
+
 def _published_apps():
     return App.objects.filter(published=True).select_related('category', 'uploaded_by').prefetch_related('ratings')
 
@@ -106,13 +133,17 @@ def _published_apps():
 
 def home(request):
     apps = _published_apps()
+    pctx = platform_context(request)
+    platform_apps = apps.filter(platform=pctx['platform'])
+    categories = Category.objects.annotate(
+        app_count=Count('apps', filter=Q(apps__published=True, apps__platform=pctx['platform'])),
+    ).filter(app_count__gt=0)
     return render(request, 'home.html', {
-        'featured_apps': apps.filter(featured=True)[:6],
-        'latest_apps': apps[:8],
-        'popular_apps': apps.order_by('-download_count')[:8],
-        'categories': Category.objects.annotate(
-            app_count=Count('apps', filter=Q(apps__published=True)),
-        ).filter(app_count__gt=0),
+        'featured_apps': platform_apps.filter(featured=True)[:6],
+        'latest_apps': platform_apps[:8],
+        'popular_apps': platform_apps.order_by('-download_count')[:8],
+        'categories': categories,
+        **pctx,
     })
 
 
@@ -122,7 +153,9 @@ def app_detail(request, slug):
     all_shots = app.screenshots.all()
     mobile_shots = [s for s in all_shots if s.type == Screenshot.TYPE_MOBILE]
     tablet_shots = [s for s in all_shots if s.type == Screenshot.TYPE_TABLET]
-    similar_apps = _published_apps().filter(category=app.category).exclude(pk=app.pk)[:8]
+    similar_apps = _published_apps().filter(
+        category=app.category, platform=app.platform,
+    ).exclude(pk=app.pk)[:8]
     reviews = app.ratings.select_related('user').all()[:20]
     user_rating = None
     if request.user.is_authenticated:
@@ -144,13 +177,15 @@ def app_detail(request, slug):
 
 def category_view(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    apps = _published_apps().filter(category=category)
-    return render(request, 'category.html', {'category': category, 'apps': apps})
+    pctx = platform_context(request)
+    apps = _published_apps().filter(category=category, platform=pctx['platform'])
+    return render(request, 'category.html', {'category': category, 'apps': apps, **pctx})
 
 
 def search_view(request):
     query = request.GET.get('q', '').strip()
     category_slug = request.GET.get('category', '').strip()
+    pctx = platform_context(request)
     apps = _published_apps()
     if query:
         apps = apps.filter(
@@ -161,12 +196,20 @@ def search_view(request):
         )
     if category_slug:
         apps = apps.filter(category__slug=category_slug)
+    apps = apps.filter(platform=pctx['platform'])
     categories = Category.objects.all()
+    switch_extra = ''
+    if query:
+        switch_extra += f'&q={urlquote(query)}'
+    if category_slug:
+        switch_extra += f'&category={urlquote(category_slug)}'
     return render(request, 'search.html', {
         'apps': apps,
         'query': query,
         'category_slug': category_slug,
         'categories': categories,
+        'switch_extra': switch_extra,
+        **pctx,
     })
 
 
@@ -175,7 +218,30 @@ def downloads_view(request):
     q = request.GET.get('q', '').strip()
     if q:
         apps = apps.filter(name__icontains=q)
-    return render(request, 'downloads.html', {'apps': apps, 'query': q})
+
+    platform = request.GET.get('platform', 'all').strip()
+    valid_platforms = {'all', App.PLATFORM_ANDROID, App.PLATFORM_DESKTOP}
+    if platform not in valid_platforms:
+        platform = 'all'
+
+    desktop_apps = apps.filter(platform=App.PLATFORM_DESKTOP)
+    android_apps = apps.filter(platform=App.PLATFORM_ANDROID)
+    if platform == App.PLATFORM_DESKTOP:
+        visible_apps = desktop_apps
+    elif platform == App.PLATFORM_ANDROID:
+        visible_apps = android_apps
+    else:
+        visible_apps = apps
+
+    return render(request, 'downloads.html', {
+        'apps': visible_apps,
+        'query': q,
+        'platform': platform,
+        'desktop_apps': desktop_apps,
+        'android_apps': android_apps,
+        'android_count': android_apps.count(),
+        'desktop_count': desktop_apps.count(),
+    })
 
 
 def about_view(request):
@@ -687,24 +753,28 @@ def _track_download(app, request):
 @login_required
 def download_app(request, slug):
     app = get_object_or_404(_published_apps(), slug=slug)
-    if not app.apk_file:
-        raise Http404('APK file not found.')
-    scan_file_for_malware(app.apk_file)
+    file = app.apk_file or app.exe_file
+    if not file:
+        raise Http404('File not found.')
+    scan_file_for_malware(file)
     _track_download(app, request)
     app.refresh_from_db()
-    response = FileResponse(app.apk_file.open('rb'), as_attachment=True, filename=app.apk_file.name.split('/')[-1])
-    return response
+    filename = file.name.split('/')[-1]
+    return FileResponse(file.open('rb'), as_attachment=True, filename=filename)
 
 
 @login_required
 def download_version(request, slug, version):
     app = get_object_or_404(_published_apps(), slug=slug)
     app_version = get_object_or_404(AppVersion, app=app, version=version)
-    scan_file_for_malware(app_version.apk_file)
+    file = app_version.apk_file or app_version.exe_file
+    if not file:
+        raise Http404('File not found.')
+    scan_file_for_malware(file)
     _track_download(app, request)
     app.refresh_from_db()
-    filename = app_version.apk_file.name.split('/')[-1]
-    return FileResponse(app_version.apk_file.open('rb'), as_attachment=True, filename=filename)
+    filename = file.name.split('/')[-1]
+    return FileResponse(file.open('rb'), as_attachment=True, filename=filename)
 
 
 # ── Dashboard ─────────────────────────────────────────────────────────────────
@@ -753,11 +823,17 @@ def upload_app(request):
     if request.method == 'POST':
         form = AppForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
+            platform = form.cleaned_data.get('platform', 'android')
             mobile_files = request.FILES.getlist('mobile_screenshots')
             tablet_files = request.FILES.getlist('tablet_screenshots')
+            desktop_files = request.FILES.getlist('desktop_screenshots')
 
-            if len(mobile_files) < 7:
-                form.add_error(None, f'Please upload at least 7 mobile screenshots (got {len(mobile_files)}).')
+            if platform == 'desktop':
+                if len(desktop_files) < 5:
+                    form.add_error(None, f'Please upload at least 5 desktop screenshots (got {len(desktop_files)}).')
+            else:
+                if len(mobile_files) < 7:
+                    form.add_error(None, f'Please upload at least 7 mobile screenshots (got {len(mobile_files)}).')
 
             if form.is_valid():
                 try:
@@ -765,6 +841,8 @@ def upload_app(request):
                         validate_screenshot_file(f, 'mobile')
                     for f in tablet_files:
                         validate_screenshot_file(f, 'tablet')
+                    for f in desktop_files:
+                        validate_screenshot_file(f, 'mobile')  # use same validation for desktop
                 except Exception as e:
                     form.add_error(None, str(e))
 
@@ -782,6 +860,8 @@ def upload_app(request):
                     Screenshot.objects.create(app=app, image=f, type=Screenshot.TYPE_MOBILE, display_order=i + 1)
                 for i, f in enumerate(tablet_files):
                     Screenshot.objects.create(app=app, image=f, type=Screenshot.TYPE_TABLET, display_order=i + 1)
+                for i, f in enumerate(desktop_files):
+                    Screenshot.objects.create(app=app, image=f, type=Screenshot.TYPE_MOBILE, display_order=i + 1)
 
                 if not request.user.is_super_admin:
                     Notification.objects.create(
@@ -791,10 +871,13 @@ def upload_app(request):
                         link='/dashboard/apps/',
                     )
 
-                messages.success(request, f'App "{app.name}" uploaded successfully with {len(mobile_files) + len(tablet_files)} screenshots.')
+                total_screens = len(mobile_files) + len(tablet_files) + len(desktop_files)
+                messages.success(request, f'App "{app.name}" uploaded successfully with {total_screens} screenshots.')
                 return redirect('dashboard_edit_app', slug=app.slug)
     else:
-        form = AppForm(user=request.user)
+        form = AppForm(user=request.user, initial={'platform': detect_platform(request)})
+    if form.errors:
+        logger.warning('Upload form invalid: %s', dict(form.errors))
     return render(request, 'upload_app.html', {'form': form, 'is_edit': False})
 
 

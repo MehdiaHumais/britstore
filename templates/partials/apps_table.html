@@ -1,0 +1,42 @@
+<div class="downloads-table-wrap">
+    <table class="downloads-table">
+        <thead>
+            <tr>
+                <th>App</th>
+                <th>Category</th>
+                <th>Version</th>
+                <th>Requires</th>
+                <th>Size</th>
+                <th>Downloads</th>
+                <th>Updated</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in table_apps %}
+            <tr>
+                <td>
+                    <div class="table-app">
+                        {% if app.icon %}<img src="{{ app.icon.url }}" alt="">{% endif %}
+                        <a href="{% url 'app_detail' app.slug %}">{{ app.name }}</a>
+                        <span class="badge {% if app.platform == 'desktop' %}badge-desktop{% else %}badge-android{% endif %}">
+                            {% if app.platform == 'desktop' %}Windows{% else %}Android{% endif %}
+                        </span>
+                    </div>
+                </td>
+                <td>{{ app.category.name }}</td>
+                <td>v{{ app.version }}</td>
+                <td>{% if app.platform == 'desktop' %}{{ app.windows_version }}{% else %}{{ app.android_version }}{% endif %}</td>
+                <td>{{ app.file_size_display }}</td>
+                <td>{{ app.download_count }}</td>
+                <td>{{ app.updated_at|date:"M d, Y" }}</td>
+                <td>
+                    <a href="{% url 'app_detail' app.slug %}" class="btn btn-outline btn-sm">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-muted" style="text-align:center">No apps in this section yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

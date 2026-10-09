@@ -4,13 +4,18 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
-def validate_apk_extension(file):
+def validate_app_extension(file):
     ext = os.path.splitext(file.name)[1].lower()
-    allowed = getattr(settings, 'ALLOWED_APK_EXTENSIONS', ['.apk', '.xapk'])
+    allowed = getattr(settings, 'ALLOWED_APP_EXTENSIONS', ['.apk', '.xapk', '.exe'])
     if ext not in allowed:
         raise ValidationError(
             f'File type "{ext}" is not allowed. Allowed types: {", ".join(allowed)}',
         )
+
+
+def validate_apk_extension(file):
+    # Keep for backward compatibility
+    validate_app_extension(file)
 
 
 def validate_file_size(file):
@@ -22,7 +27,7 @@ def validate_file_size(file):
 
 
 def validate_upload_file(file):
-    validate_apk_extension(file)
+    validate_app_extension(file)
     validate_file_size(file)
 
 

@@ -83,8 +83,18 @@ def download_latest(request, package_name):
     if not latest:
         raise Http404('No versions found')
 
-    response = FileResponse(latest.apk_file.open('rb'), content_type='application/vnd.android.package-archive')
-    response['Content-Disposition'] = f'attachment; filename="{app.slug}-v{latest.version}.apk"'
+    if latest.apk_file:
+        file = latest.apk_file
+        ext = '.apk'
+        content_type = 'application/vnd.android.package-archive'
+    elif latest.exe_file:
+        file = latest.exe_file
+        ext = '.exe'
+        content_type = 'application/octet-stream'
+    else:
+        raise Http404('No download file found')
+    response = FileResponse(file.open('rb'), content_type=content_type)
+    response['Content-Disposition'] = f'attachment; filename="{app.slug}-v{latest.version}{ext}"'
     return response
 
 
@@ -173,7 +183,9 @@ def upload_release(request):
     package_name = cd['package_name']
     version = cd['version']
     version_code = cd['version_code']
-    apk_file = cd['apk_file']
+    apk_file = cd.get('apk_file')
+    if not apk_file and request.FILES.get('exe_file'):
+        apk_file = request.FILES.get('exe_file')
     release_notes = cd.get('release_notes', '') or ''
     force_update = bool(cd.get('force_update', False))
 
@@ -236,16 +248,21 @@ def upload_release(request):
         app=app,
         version=version,
         version_code=version_code,
-        apk_file=apk_file,
+        apk_file=apk_file if getattr(apk_file, 'name', '').lower().endswith(('.apk', '.xapk')) else None,
+        exe_file=apk_file if getattr(apk_file, 'name', '').lower().endswith('.exe') else None,
         release_notes=release_notes,
         force_update=force_update,
         is_latest=True,
     )
     version_obj.save()
 
-    app.apk_file = version_obj.apk_file
-    if hasattr(version_obj.apk_file, 'size'):
-        app.file_size = version_obj.apk_file.size
+    if version_obj.apk_file:
+        app.apk_file = version_obj.apk_file
+    if version_obj.exe_file:
+        app.exe_file = version_obj.exe_file
+    file = version_obj.apk_file or version_obj.exe_file
+    if file and hasattr(file, 'size'):
+        app.file_size = file.size
     app.version = version
     app.release_notes = release_notes
     app.save()
@@ -254,6 +271,7 @@ def upload_release(request):
     token.save(update_fields=['last_used'])
 
     # Create audit log
+    file = version_obj.apk_file or version_obj.exe_file
     UploadAuditLog.objects.create(
         token=token,
         token_name=token.name,
@@ -262,7 +280,7 @@ def upload_release(request):
         version=version,
         version_code=version_code,
         force_update=force_update,
-        apk_path=getattr(version_obj.apk_file, 'name', ''),
+        apk_path=getattr(file, 'name', '') if file else '',
         ip_address=get_client_ip(request),
     )
 

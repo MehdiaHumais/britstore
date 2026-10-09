@@ -9,6 +9,7 @@
             <h1>Search Apps</h1>
         </div>
         <form action="{% url 'search' %}" method="get" class="search-page-form">
+            <input type="hidden" name="platform" value="{{ platform }}">
             <input type="search" name="q" value="{{ query }}" placeholder="Search by app name, description..." class="form-control">
             <select name="category" class="form-select">
                 <option value="">All Categories</option>
@@ -18,6 +19,7 @@
             </select>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
+        {% include 'partials/platform_switch.html' %}
         {% if query or category_slug %}
         <p class="search-results-count">{{ apps|length }} result{{ apps|length|pluralize }} found</p>
         {% endif %}
