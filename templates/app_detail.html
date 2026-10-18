@@ -75,23 +75,32 @@
             </div>
         </div>
 
-        {% if mobile_screenshots or tablet_screenshots %}
+        {% if mobile_screenshots or tablet_screenshots or desktop_screenshots %}
         <div class="screenshots-section">
             <h2 style="font-size:1.05rem;font-weight:600;margin-bottom:.75rem">Screenshots</h2>
             <div class="screenshot-type-tabs">
+                {% if desktop_screenshots %}
+                <button class="active" onclick="showScreenshots('desktop', this)">Desktop ({{ desktop_screenshots|length }})</button>
+                {% else %}
                 <button class="active" onclick="showScreenshots('mobile', this)">Phone ({{ mobile_screenshots|length }})</button>
                 {% if tablet_screenshots %}
                 <button onclick="showScreenshots('tablet', this)">Tablet ({{ tablet_screenshots|length }})</button>
                 {% endif %}
+                {% endif %}
                 <button onclick="showScreenshots('all', this)">All ({{ screenshots|length }})</button>
             </div>
             <div class="screenshots-grid" id="screenshotGrid">
+                {% with mcount=mobile_screenshots|length tcount=tablet_screenshots|length %}
                 {% for shot in mobile_screenshots %}
                 <img src="{{ shot.image.url }}" alt="Mobile screenshot {{ forloop.counter }}" class="screenshot" data-type="mobile" onclick="openLightbox({{ forloop.counter0 }})">
                 {% endfor %}
                 {% for shot in tablet_screenshots %}
-                <img src="{{ shot.image.url }}" alt="Tablet screenshot {{ forloop.counter }}" class="screenshot" data-type="tablet" onclick="openLightbox({{ mobile_screenshots|length|add:forloop.counter0 }})">
+                <img src="{{ shot.image.url }}" alt="Tablet screenshot {{ forloop.counter }}" class="screenshot" data-type="tablet" onclick="openLightbox({{ mcount|add:forloop.counter0 }})">
                 {% endfor %}
+                {% for shot in desktop_screenshots %}
+                <img src="{{ shot.image.url }}" alt="Desktop screenshot {{ forloop.counter }}" class="screenshot" data-type="desktop" onclick="openLightbox({{ mcount|add:tcount|add:forloop.counter0 }})">
+                {% endfor %}
+                {% endwith %}
             </div>
         </div>
 
@@ -218,8 +227,14 @@
 
 <script>
 var allImages = [
-    {% for shot in screenshots %}
-    "{{ shot.image.url }}"{% if not forloop.last %},{% endif %}
+    {% for shot in mobile_screenshots %}
+    "{{ shot.image.url }}",
+    {% endfor %}
+    {% for shot in tablet_screenshots %}
+    "{{ shot.image.url }}",
+    {% endfor %}
+    {% for shot in desktop_screenshots %}
+    "{{ shot.image.url }}",
     {% endfor %}
 ];
 var currentIndex = 0;

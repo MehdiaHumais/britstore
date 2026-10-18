@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th>App</th>
+                        <th>Platform</th>
                         <th>Category</th>
                         <th>Version</th>
                         <th>Downloads</th>
@@ -31,12 +32,13 @@
                 <tbody>
                     {% for app in apps %}
                     <tr>
-                        <td>
-                            <div class="table-app">
-                                {% if app.icon %}<img src="{{ app.icon.url }}" alt="">{% endif %}
-                                {{ app.name }}
-                            </div>
-                        </td>
+                         <td>
+                             <div class="table-app">
+                                 {% if app.icon %}<img src="{{ app.icon.url }}" alt="">{% endif %}
+                                 {{ app.name }}
+                             </div>
+                         </td>
+                         <td>{% if app.platform == 'desktop' %}<span class="badge badge-desktop">Windows</span>{% else %}<span class="badge badge-android">Android</span>{% endif %}</td>
                         <td>{{ app.category.name }}</td>
                         <td>v{{ app.version }}</td>
                         <td>{{ app.download_count }}</td>
@@ -64,7 +66,7 @@
                         </td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="7" class="text-muted">No apps yet. <a href="{% url 'dashboard_upload' %}">Upload one</a></td></tr>
+                     <tr><td colspan="8" class="text-muted">No apps yet. <a href="{% url 'dashboard_upload' %}">Upload one</a></td></tr>
                     {% endfor %}
                 </tbody>
             </table>

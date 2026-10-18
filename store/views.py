@@ -153,6 +153,7 @@ def app_detail(request, slug):
     all_shots = app.screenshots.all()
     mobile_shots = [s for s in all_shots if s.type == Screenshot.TYPE_MOBILE]
     tablet_shots = [s for s in all_shots if s.type == Screenshot.TYPE_TABLET]
+    desktop_shots = [s for s in all_shots if s.type == Screenshot.TYPE_DESKTOP]
     similar_apps = _published_apps().filter(
         category=app.category, platform=app.platform,
     ).exclude(pk=app.pk)[:8]
@@ -169,6 +170,7 @@ def app_detail(request, slug):
         'screenshots': all_shots,
         'mobile_screenshots': mobile_shots,
         'tablet_screenshots': tablet_shots,
+        'desktop_screenshots': desktop_shots,
         'similar_apps': similar_apps,
         'reviews': reviews,
         'user_rating': user_rating,
@@ -861,7 +863,7 @@ def upload_app(request):
                 for i, f in enumerate(tablet_files):
                     Screenshot.objects.create(app=app, image=f, type=Screenshot.TYPE_TABLET, display_order=i + 1)
                 for i, f in enumerate(desktop_files):
-                    Screenshot.objects.create(app=app, image=f, type=Screenshot.TYPE_MOBILE, display_order=i + 1)
+                    Screenshot.objects.create(app=app, image=f, type=Screenshot.TYPE_DESKTOP, display_order=i + 1)
 
                 if not request.user.is_super_admin:
                     Notification.objects.create(
@@ -898,6 +900,7 @@ def edit_app(request, slug, app=None):
     screenshots_qs = app.screenshots.all()
     mobile_count = screenshots_qs.filter(type=Screenshot.TYPE_MOBILE).count()
     tablet_count = screenshots_qs.filter(type=Screenshot.TYPE_TABLET).count()
+    desktop_count = screenshots_qs.filter(type=Screenshot.TYPE_DESKTOP).count()
     return render(request, 'upload_app.html', {
         'form': form,
         'app': app,
@@ -906,6 +909,7 @@ def edit_app(request, slug, app=None):
         'versions': app.versions.all(),
         'mobile_count': mobile_count,
         'tablet_count': tablet_count,
+        'desktop_count': desktop_count,
     })
 
 

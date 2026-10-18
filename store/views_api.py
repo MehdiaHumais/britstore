@@ -371,7 +371,10 @@ def update_app_media(request):
         except Exception as e:
             return JsonResponse({'error': f'Invalid mobile screenshot: {e}'}, status=400)
         Screenshot.objects.create(
-            app=app, image=f, type=Screenshot.TYPE_MOBILE, display_order=next_order
+            app=app,
+            image=f,
+            type=Screenshot.TYPE_DESKTOP if app.platform == 'desktop' else Screenshot.TYPE_MOBILE,
+            display_order=next_order,
         )
         screenshots_added += 1
         next_order += 1
@@ -383,7 +386,10 @@ def update_app_media(request):
         except Exception as e:
             return JsonResponse({'error': f'Invalid tablet screenshot: {e}'}, status=400)
         Screenshot.objects.create(
-            app=app, image=f, type=Screenshot.TYPE_TABLET, display_order=next_order
+            app=app,
+            image=f,
+            type=Screenshot.TYPE_TABLET,
+            display_order=next_order,
         )
         screenshots_added += 1
         next_order += 1

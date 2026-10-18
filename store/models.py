@@ -265,9 +265,11 @@ def screenshot_path(instance, filename):
 class Screenshot(models.Model):
     TYPE_MOBILE = 'mobile'
     TYPE_TABLET = 'tablet'
+    TYPE_DESKTOP = 'desktop'
     TYPE_CHOICES = [
         (TYPE_MOBILE, 'Mobile'),
         (TYPE_TABLET, 'Tablet'),
+        (TYPE_DESKTOP, 'Desktop'),
     ]
 
     app = models.ForeignKey(App, on_delete=models.CASCADE, related_name='screenshots')

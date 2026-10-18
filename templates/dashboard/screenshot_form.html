@@ -42,6 +42,7 @@
   .preview-label { font-size: .8rem; font-weight: 600; color: var(--gray-500); margin-bottom: .5rem; text-transform: uppercase; letter-spacing: .04em; }
   .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: .5rem; }
   .preview-thumb { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 9/16; background: var(--bg); border: 1px solid var(--gray-200); }
+  .preview-thumb.desktop { aspect-ratio: 16/9; }
   .preview-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* File count badge */
@@ -67,10 +68,15 @@
           <div class="form-group" style="margin-bottom:1.25rem;">
             <label style="font-weight:600;font-size:.875rem;display:block;margin-bottom:.5rem;color:var(--gray-700);">Screenshot Type</label>
             <div class="type-row">
+              {% if app.platform == 'desktop' %}
+              <input type="radio" name="type" id="type-desktop" value="desktop" class="type-radio" checked>
+              <label for="type-desktop" class="type-label">&#128421;&#65039; Desktop</label>
+              {% else %}
               <input type="radio" name="type" id="type-mobile" value="mobile" class="type-radio" checked>
               <label for="type-mobile" class="type-label">&#128241; Mobile</label>
               <input type="radio" name="type" id="type-tablet" value="tablet" class="type-radio">
               <label for="type-tablet" class="type-label">&#128187; Tablet</label>
+              {% endif %}
             </div>
           </div>
 
@@ -127,7 +133,7 @@
       var reader = new FileReader();
       reader.onload = function (e) {
         var wrap = document.createElement('div');
-        wrap.className = 'preview-thumb';
+        wrap.className = 'preview-thumb{% if app.platform == "desktop" %} desktop{% endif %}';
         var img = document.createElement('img');
         img.src = e.target.result;
         wrap.appendChild(img);

@@ -206,6 +206,7 @@
 }
 .screenshot-type-badge.mobile { background: #dbeafe; color: #1d4ed8; }
 .screenshot-type-badge.tablet { background: #fef3c7; color: #b45309; }
+.screenshot-type-badge.desktop { background: #dcfce7; color: #15803d; }
 
 /* Analytics chart */
 .chart-bars {

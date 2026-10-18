@@ -103,10 +103,18 @@
                     <h3>Screenshots <span class="required-mark">*</span></h3>
                     <a href="{% url 'dashboard_add_screenshot' app.slug %}" class="btn btn-outline btn-sm">+ Add</a>
                 </div>
-                {% if mobile_count < 7 %}
-                <div class="alert alert-warning">
-                    Need at least <strong>7 screenshots</strong> ({{ mobile_count }} mobile, {{ tablet_count }} tablet so far). Use <strong>+ Add</strong> to upload more.
-                </div>
+                {% if app.platform == 'desktop' %}
+                    {% if desktop_count < 5 %}
+                    <div class="alert alert-warning">
+                        Need at least <strong>5 desktop screenshots</strong> ({{ desktop_count }} so far). Use <strong>+ Add</strong> to upload more.
+                    </div>
+                    {% endif %}
+                {% else %}
+                    {% if mobile_count < 7 %}
+                    <div class="alert alert-warning">
+                        Need at least <strong>7 screenshots</strong> ({{ mobile_count }} mobile, {{ tablet_count }} tablet so far). Use <strong>+ Add</strong> to upload more.
+                    </div>
+                    {% endif %}
                 {% endif %}
                 <div class="screenshots-manage">
                     {% for shot in screenshots %}
